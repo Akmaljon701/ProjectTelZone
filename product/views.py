@@ -6,15 +6,11 @@ from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from product.models import Product
 from product.serializers import ProductSerializer
+from utils.pagination import paginate
+from utils.responses import success
 
 
-@extend_schema(
-    summary="Client product",
-    request=ProductSerializer,
-    responses={
-        201: ProductSerializer
-    },
-)
+@extend_schema(summary="Create product", request=ProductSerializer)
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 @renderer_classes([JSONRenderer])
@@ -35,13 +31,13 @@ def create_product(request):
         difference = price - purchase_price
         percent = (difference * 100) / purchase_price
         serializer.save(status='on_sale', percent=percent)
-        return Response(serializer.data, status=201)
+        return success
     elif price == 0:
         if percent <= 0:
             return Response("Price must not be equal to or less than 0!", status=422)
         price = purchase_price + ((purchase_price * percent) / 100)
         serializer.save(status='on_sale', price=price)
-        return Response(serializer.data, status=201)
+        return success
     else:
         return Response({'detail': 'Unexpected error! (Note: price or percent must be 0)'}, status=400)
 
@@ -60,8 +56,7 @@ def create_product(request):
 def get_products(request):
     status = request.query_params.get('status')
     clients = Product.objects.filter(status=status).order_by('-id').all()
-    serializer = ProductSerializer(clients, many=True)
-    return Response(serializer.data, status=200)
+    return paginate(clients, ProductSerializer, request)
 
 
 @extend_schema(
@@ -79,4 +74,3 @@ def get_product(request):
     client = Product.objects.get(id=pk)
     serializer = ProductSerializer(client)
     return Response(serializer.data, status=200)
-

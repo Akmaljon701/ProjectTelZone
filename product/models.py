@@ -9,10 +9,9 @@ class Product(models.Model):
     purchase_price = models.FloatField()
     percent = models.FloatField(blank=True, null=True)
     price = models.FloatField(blank=True, null=True)
-    imei = models.BigIntegerField()     # str
+    imei = models.CharField(max_length=100)
     date = models.DateField(auto_now_add=True)
     status = models.CharField(max_length=20, default='on_sale', choices=[['on_sale', 'on_sale'], ['sold', 'sold']])
-    client = models.ForeignKey(Client, related_name='products', on_delete=models.CASCADE, blank=True, null=True)
 
     def __str__(self):
         return f'{self.name} - {self.price}'

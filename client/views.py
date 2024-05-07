@@ -6,15 +6,10 @@ from rest_framework.permissions import IsAuthenticated
 from client.models import Client
 from client.serializers import ClientSerializer
 from rest_framework.response import Response
+from utils.responses import success
 
 
-@extend_schema(
-    summary="Client create",
-    request=ClientSerializer,
-    responses={
-        201: ClientSerializer
-    },
-)
+@extend_schema(summary="Client create", request=ClientSerializer)
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 @renderer_classes([JSONRenderer])
@@ -22,7 +17,7 @@ def create_client(request):
     serializer = ClientSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
     serializer.save()
-    return Response(serializer.data, status=201)
+    return success
 
 
 @extend_schema(

@@ -1,4 +1,4 @@
-from rest_framework.serializers import ModelSerializer
+from rest_framework.serializers import ModelSerializer, Serializer, ListField, IntegerField
 from product.models import Product
 
 
@@ -10,4 +10,6 @@ class ProductSerializer(ModelSerializer):
             'status': {'read_only': True},
             'client': {'read_only': True}
         }
+
+
 

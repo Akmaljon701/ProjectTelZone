@@ -1,0 +1,49 @@
+version: '3.11'
+
+services:
+  web:
+    container_name: telzone_backend
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: gunicorn core.wsgi:application --bind 0.0.0.0:8000
+    volumes:
+      - .:/usr/src/TelZone/
+      - static_volume:/home/TelZone/static
+      - media_volume:/home/TelZone/media
+    expose:
+      - 8000
+    ports:
+      - 8000:8000
+    env_file:
+      - .env
+    depends_on:
+      - db
+  db:
+    container_name: telzone_db
+    image: postgres:15
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=Akmaljon2001
+      - POSTGRES_DB=tel_zone_db
+  nginx:
+    container_name: telzone_nginx
+    build: ./nginx
+    volumes:
+      - static_volume:/home/TelZone/static
+      - media_volume:/home/TelZone/media
+    ports:
+      - 1337:80
+    depends_on:
+      - web
+
+volumes:
+  postgres_data:
+    name: telzone_db_volume
+  static_volume:
+    name: telzone_backend_static_volume
+  media_volume:
+    name: telzone_backend_static_volume
+

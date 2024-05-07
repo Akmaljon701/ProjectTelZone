@@ -44,7 +44,6 @@ def create_product(request):
 
 @extend_schema(
     summary="Get products",
-    responses=ProductSerializer(many=True),
     parameters=[
         OpenApiParameter(name='status', description="Choice 'sold' or 'on_sold'",
                          required=True, type=OpenApiTypes.STR, enum=['sold', 'on_sale']),

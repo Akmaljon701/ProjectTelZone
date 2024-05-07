@@ -6,6 +6,8 @@ from rest_framework.permissions import IsAuthenticated
 from client.models import Client
 from client.serializers import ClientSerializer
 from rest_framework.response import Response
+
+from utils.pagination import paginate
 from utils.responses import success
 
 
@@ -22,15 +24,21 @@ def create_client(request):
 
 @extend_schema(
     summary="Get clients",
-    responses=ClientSerializer(many=True)
+    parameters=[
+        OpenApiParameter(name='FIO', description='FIO', required=False, type=OpenApiTypes.STR),
+        OpenApiParameter(name='phone_number', description='phone_number', required=False, type=OpenApiTypes.STR),
+    ]
 )
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 @renderer_classes([JSONRenderer])
 def get_clients(request):
     clients = Client.objects.all().order_by('FIO')
-    serializer = ClientSerializer(clients, many=True)
-    return Response(serializer.data, status=200)
+    fio = request.query_params.get('FIO')
+    phone_number = request.query_params.get('phone_number')
+    if fio: clients = clients.filter(FIO__icontains=fio)
+    elif phone_number: clients = clients.filter(phone_number__icontains=phone_number)
+    return paginate(clients, ClientSerializer, request)
 
 
 @extend_schema(

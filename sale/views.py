@@ -12,7 +12,7 @@ from utils.pagination import paginate
 from utils.responses import success
 
 
-@extend_schema(summary="Sell product", request=CreateAndUpdateSaleSerializer)
+@extend_schema(summary="Sell product", request=CreateAndUpdateSaleSerializer, responses=None)
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 @renderer_classes([JSONRenderer])
@@ -31,6 +31,7 @@ def sell_product(request):
 @extend_schema(
     summary="Update sale",
     request=CreateAndUpdateSaleSerializer,
+    responses=None,
     parameters=[
         OpenApiParameter(name='pk', description='Sale ID', required=True, type=OpenApiTypes.INT),
     ]

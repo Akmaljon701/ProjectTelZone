@@ -1,3 +1,4 @@
+from django.db.models import Q
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework.decorators import api_view, permission_classes, renderer_classes
@@ -6,12 +7,11 @@ from rest_framework.permissions import IsAuthenticated
 from client.models import Client
 from client.serializers import ClientSerializer
 from rest_framework.response import Response
-
 from utils.pagination import paginate
 from utils.responses import success
 
 
-@extend_schema(summary="Client create", request=ClientSerializer)
+@extend_schema(summary="Client create", request=ClientSerializer, responses=None)
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 @renderer_classes([JSONRenderer])
@@ -23,10 +23,31 @@ def create_client(request):
 
 
 @extend_schema(
-    summary="Get clients",
+    summary="Update Client",
+    request=ClientSerializer,
+    responses=None,
     parameters=[
-        OpenApiParameter(name='FIO', description='FIO', required=False, type=OpenApiTypes.STR),
-        OpenApiParameter(name='phone_number', description='phone_number', required=False, type=OpenApiTypes.STR),
+        OpenApiParameter(name='pk', description='Sale ID', required=True, type=OpenApiTypes.INT),
+    ]
+)
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+@renderer_classes([JSONRenderer])
+def update_client(request):
+    pk = request.query_params.get('pk')
+    client = Client.objects.get(id=pk)
+    serializer = ClientSerializer(client, data=request.data, partial=True)
+    serializer.is_valid(raise_exception=True)
+    serializer.save()
+    return success
+
+
+@extend_schema(
+    summary="Get clients",
+    request=None,
+    responses=None,
+    parameters=[
+        OpenApiParameter(name='search', description='FIO or phone', required=False, type=OpenApiTypes.STR),
     ]
 )
 @api_view(['GET'])
@@ -34,10 +55,8 @@ def create_client(request):
 @renderer_classes([JSONRenderer])
 def get_clients(request):
     clients = Client.objects.all().order_by('FIO')
-    fio = request.query_params.get('FIO')
-    phone_number = request.query_params.get('phone_number')
-    if fio: clients = clients.filter(FIO__icontains=fio)
-    elif phone_number: clients = clients.filter(phone_number__icontains=phone_number)
+    search = request.query_params.get('search')
+    if search: clients = clients.filter(Q(FIO__icontains=search) | Q(phone_number__icontains=search))
     return paginate(clients, ClientSerializer, request)
 
 

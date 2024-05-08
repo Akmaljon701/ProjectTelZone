@@ -10,7 +10,7 @@ from utils.pagination import paginate
 from utils.responses import success
 
 
-@extend_schema(summary="Create product", request=ProductSerializer)
+@extend_schema(summary="Create product", request=ProductSerializer, responses=None)
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 @renderer_classes([JSONRenderer])
@@ -43,6 +43,8 @@ def create_product(request):
 
 
 @extend_schema(
+    request=None,
+    responses=None,
     summary="Get products",
     parameters=[
         OpenApiParameter(name='status', description="Choice 'sold' or 'on_sold'",

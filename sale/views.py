@@ -4,7 +4,6 @@ from rest_framework.decorators import api_view, renderer_classes, permission_cla
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
-from client.models import Client
 from product.models import Product
 from sale.models import Sale
 from sale.serializers import SaleSerializer, CreateAndUpdateSaleSerializer
@@ -50,10 +49,10 @@ def update_sale(request):
 
 @extend_schema(summary="Get sales", responses=SaleSerializer(many=True))
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
-@renderer_classes([JSONRenderer])
+# @permission_classes([IsAuthenticated])
+# @renderer_classes([JSONRenderer])
 def get_sales(request):
-    sales = Sale.objects.order_by('-id').all()
+    sales = Sale.objects.select_related('client', 'product').order_by('-id').all()
     return paginate(sales, SaleSerializer, request)
 
 
@@ -69,6 +68,6 @@ def get_sales(request):
 @renderer_classes([JSONRenderer])
 def get_sale(request):
     pk = request.query_params.get('pk')
-    sale = Sale.objects.get(id=pk)
+    sale = Sale.objects.select_related('client', 'product').get(id=pk)
     serializer = SaleSerializer(sale)
     return Response(serializer.data, status=200)

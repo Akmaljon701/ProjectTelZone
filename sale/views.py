@@ -49,8 +49,8 @@ def update_sale(request):
 
 @extend_schema(summary="Get sales", responses=SaleSerializer(many=True))
 @api_view(['GET'])
-# @permission_classes([IsAuthenticated])
-# @renderer_classes([JSONRenderer])
+@permission_classes([IsAuthenticated])
+@renderer_classes([JSONRenderer])
 def get_sales(request):
     sales = Sale.objects.select_related('client', 'product').order_by('-id').all()
     return paginate(sales, SaleSerializer, request)

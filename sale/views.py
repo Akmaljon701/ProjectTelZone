@@ -1,8 +1,6 @@
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema, OpenApiParameter
-from rest_framework.decorators import api_view, renderer_classes, permission_classes
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.renderers import JSONRenderer
+from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from product.models import Product
 from sale.models import Sale
@@ -13,8 +11,6 @@ from utils.responses import success
 
 @extend_schema(summary="Sell product", request=CreateAndUpdateSaleSerializer, responses=None)
 @api_view(['POST'])
-@permission_classes([IsAuthenticated])
-@renderer_classes([JSONRenderer])
 def sell_product(request):
     serializer = CreateAndUpdateSaleSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
@@ -36,8 +32,6 @@ def sell_product(request):
     ]
 )
 @api_view(['PUT'])
-@permission_classes([IsAuthenticated])
-@renderer_classes([JSONRenderer])
 def update_sale(request):
     pk = request.query_params.get('pk')
     sale = Sale.objects.get(id=pk)
@@ -49,8 +43,6 @@ def update_sale(request):
 
 @extend_schema(summary="Get sales", responses=SaleSerializer(many=True))
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
-@renderer_classes([JSONRenderer])
 def get_sales(request):
     sales = Sale.objects.select_related('client', 'product').order_by('-id').all()
     return paginate(sales, SaleSerializer, request)
@@ -64,8 +56,6 @@ def get_sales(request):
     ]
 )
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
-@renderer_classes([JSONRenderer])
 def get_sale(request):
     pk = request.query_params.get('pk')
     sale = Sale.objects.select_related('client', 'product').get(id=pk)

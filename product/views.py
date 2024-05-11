@@ -1,8 +1,6 @@
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema, OpenApiParameter
-from rest_framework.decorators import api_view, renderer_classes, permission_classes
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.renderers import JSONRenderer
+from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from product.models import Product
 from product.serializers import ProductSerializer
@@ -12,8 +10,6 @@ from utils.responses import success
 
 @extend_schema(summary="Create product", request=ProductSerializer, responses=None)
 @api_view(['POST'])
-@permission_classes([IsAuthenticated])
-@renderer_classes([JSONRenderer])
 def create_product(request):
     """
     Agar percent yozilsa price ga shu percent ga qarab purchase_price ustiga qo'shiladi,
@@ -52,8 +48,6 @@ def create_product(request):
     ]
 )
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
-@renderer_classes([JSONRenderer])
 def get_products(request):
     status = request.query_params.get('status')
     clients = Product.objects.filter(status=status).order_by('-id').all()
@@ -68,8 +62,6 @@ def get_products(request):
     ]
 )
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
-@renderer_classes([JSONRenderer])
 def get_product(request):
     pk = request.query_params.get('pk')
     client = Product.objects.get(id=pk)

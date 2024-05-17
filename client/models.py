@@ -9,5 +9,5 @@ class Client(models.Model):
         return f'{self.FIO} - {self.phone_number}'
 
     class Meta:
-        verbose_name_plural = "Clients"
+        verbose_name_plural = "Клиенты"
 

@@ -1,7 +1,5 @@
 from drf_spectacular.utils import extend_schema
-from rest_framework.decorators import api_view, permission_classes, renderer_classes
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.renderers import JSONRenderer
+from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from user.serializers import CustomUserSerializer
 from utils.responses import success

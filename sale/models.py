@@ -13,4 +13,4 @@ class Sale(models.Model):
         return f'{self.product} - {self.client}'
 
     class Meta:
-        verbose_name_plural = "Sales"
+        verbose_name_plural = "Продажи"

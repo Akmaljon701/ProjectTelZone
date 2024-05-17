@@ -5,9 +5,9 @@ from django.contrib.auth import get_user_model
 CustomUser = get_user_model()
 
 
-admin.site.site_title = "Tel Zone Admin"
+admin.site.site_title = "Tel Zone Админ"
 admin.site.site_header = "Tel Zone"
-admin.site.index_title = "Tel Zone Admin"
+admin.site.index_title = "Tel Zone Админ"
 admin.site.site_brand = "Tel Zone"
 admin.site.welcome_sign = "Tel Zone"
 admin.site.copyright = "Tel Zone"

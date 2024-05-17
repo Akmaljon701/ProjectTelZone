@@ -1,14 +1,15 @@
+from django.db.models import Q
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from product.models import Product
-from product.serializers import ProductSerializer
+from product.serializers import ProductCreateSerializer, ProductUpdateSerializer, ProductGetSerializer
 from utils.pagination import paginate
 from utils.responses import success
 
 
-@extend_schema(summary="Create product", request=ProductSerializer, responses=None)
+@extend_schema(summary="Create product", request=ProductCreateSerializer, responses=None)
 @api_view(['POST'])
 def create_product(request):
     """
@@ -16,7 +17,7 @@ def create_product(request):
     price yozilsa necha percent qoshilgani backend tomondan hisoblanadi,
     shunichun Frontda price yozilsa price input chiqmasin, price yozilsa aksincha bo'lsin
     """
-    serializer = ProductSerializer(data=request.data)
+    serializer = ProductCreateSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
     purchase_price = serializer.validated_data['purchase_price']
     percent = serializer.validated_data['percent']
@@ -39,24 +40,45 @@ def create_product(request):
 
 
 @extend_schema(
-    request=None,
+    summary="Update Product",
+    request=ProductUpdateSerializer,
     responses=None,
+    parameters=[
+        OpenApiParameter(name='pk', description='Product ID', required=True, type=OpenApiTypes.INT),
+    ]
+)
+@api_view(['PUT'])
+def update_product(request):
+    pk = request.query_params.get('pk')
+    product = Product.objects.get(id=pk)
+    serializer = ProductUpdateSerializer(product, data=request.data, partial=True)
+    serializer.is_valid(raise_exception=True)
+    serializer.save()
+    return success
+
+
+@extend_schema(
+    request=None,
+    responses=ProductGetSerializer,
     summary="Get products",
     parameters=[
         OpenApiParameter(name='status', description="Choice 'sold' or 'on_sold'",
                          required=True, type=OpenApiTypes.STR, enum=['sold', 'on_sale']),
+        OpenApiParameter(name='search', description='name or imei', required=False, type=OpenApiTypes.STR),
     ]
 )
 @api_view(['GET'])
 def get_products(request):
     status = request.query_params.get('status')
-    clients = Product.objects.filter(status=status).order_by('-id').all()
-    return paginate(clients, ProductSerializer, request)
+    search = request.query_params.get('search')
+    clients = Product.objects.filter(status=status).all().order_by('-id')
+    if search: clients = clients.filter(Q(name__icontains=search) | Q(imei__icontains=search))
+    return paginate(clients, ProductGetSerializer, request)
 
 
 @extend_schema(
     summary="Get product",
-    responses=ProductSerializer,
+    responses=ProductGetSerializer,
     parameters=[
         OpenApiParameter(name='pk', description='Product ID', required=True, type=OpenApiTypes.INT),
     ]
@@ -65,5 +87,5 @@ def get_products(request):
 def get_product(request):
     pk = request.query_params.get('pk')
     client = Product.objects.get(id=pk)
-    serializer = ProductSerializer(client)
+    serializer = ProductGetSerializer(client)
     return Response(serializer.data, status=200)

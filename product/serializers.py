@@ -11,13 +11,13 @@ class ProductSerializerForRelation(ModelSerializer):
 class ProductCreateSerializer(ModelSerializer):
     class Meta:
         model = Product
-        exclude = ('status')
+        exclude = ['status']
 
 
 class ProductUpdateSerializer(ModelSerializer):
     class Meta:
         model = Product
-        exclude = ('status')
+        exclude = ['status']
 
 
 class ProductGetSerializer(ModelSerializer):

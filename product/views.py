@@ -6,10 +6,10 @@ from rest_framework.response import Response
 from product.models import Product
 from product.serializers import ProductCreateSerializer, ProductUpdateSerializer, ProductGetSerializer
 from utils.pagination import paginate
-from utils.responses import success
+from utils.responses import success, response_schema
 
 
-@extend_schema(summary="Create product", request=ProductCreateSerializer, responses=None)
+@extend_schema(summary="Create product", request=ProductCreateSerializer, responses=response_schema)
 @api_view(['POST'])
 def create_product(request):
     """
@@ -42,7 +42,7 @@ def create_product(request):
 @extend_schema(
     summary="Update Product",
     request=ProductUpdateSerializer,
-    responses=None,
+    responses=response_schema,
     parameters=[
         OpenApiParameter(name='pk', description='Product ID', required=True, type=OpenApiTypes.INT),
     ]

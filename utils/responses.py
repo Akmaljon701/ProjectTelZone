@@ -12,3 +12,9 @@ error = CustomException({'response': "Xatolik yuz berdi"})
 none = CustomException({'response': "Kiritilganlar bo'yicha malumot topilmadi"})
 value_e = CustomException({'response': "Malumotlarni to'g'ri shakilda jo'nating"})
 restricted = CustomException({'response': "Bu amaliyot uchun sizda ruhsat mavjud emas"})
+
+
+response_schema = {
+    200: {"description": "The operation was completed successfully", "example": {"response": "Success!"}},
+    # 400: {"description": "The operation did not complete successfully", "example": {"response": "Bad Request!"}},
+}

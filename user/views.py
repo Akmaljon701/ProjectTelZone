@@ -2,7 +2,7 @@ from drf_spectacular.utils import extend_schema
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from user.serializers import CustomUserSerializer
-from utils.responses import success
+from utils.responses import success, response_schema
 
 
 @extend_schema(summary="Get current user", responses=CustomUserSerializer)
@@ -15,9 +15,7 @@ def get_current_user(request):
 @extend_schema(
     summary="Get current user",
     request=CustomUserSerializer,
-    responses={
-        200: CustomUserSerializer
-    },
+    responses=response_schema
 )
 @api_view(['PUT'])
 def update_custom_user(request):

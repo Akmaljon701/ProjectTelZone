@@ -62,7 +62,6 @@ def get_payment_results(request):
                      'warehouse': {
                          'purchase_price': total_purchase_price,
                          'price': total_price,
-                     }})
-
+                     }}, status=200)
 
 

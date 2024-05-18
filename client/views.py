@@ -6,10 +6,10 @@ from client.models import Client
 from client.serializers import ClientCreateSerializer, ClientUpdateSerializer, ClientGetSerializer
 from rest_framework.response import Response
 from utils.pagination import paginate
-from utils.responses import success
+from utils.responses import success, response_schema
 
 
-@extend_schema(summary="Client create", request=ClientCreateSerializer, responses=None)
+@extend_schema(summary="Client create", request=ClientCreateSerializer, responses=response_schema)
 @api_view(['POST'])
 def create_client(request):
     serializer = ClientCreateSerializer(data=request.data)
@@ -21,7 +21,7 @@ def create_client(request):
 @extend_schema(
     summary="Update Client",
     request=ClientUpdateSerializer,
-    responses=None,
+    responses=response_schema,
     parameters=[
         OpenApiParameter(name='pk', description='Client ID', required=True, type=OpenApiTypes.INT),
     ]

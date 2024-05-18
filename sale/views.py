@@ -6,10 +6,10 @@ from product.models import Product
 from sale.models import Sale
 from sale.serializers import SaleGetSerializer, SaleCreateSerializer, SaleUpdateSerializer
 from utils.pagination import paginate
-from utils.responses import success
+from utils.responses import success, response_schema
 
 
-@extend_schema(summary="Sell product", request=SaleCreateSerializer, responses=None)
+@extend_schema(summary="Sell product", request=SaleCreateSerializer, responses=response_schema)
 @api_view(['POST'])
 def sell_product(request):
     serializer = SaleCreateSerializer(data=request.data)
@@ -26,7 +26,7 @@ def sell_product(request):
 @extend_schema(
     summary="Update sale",
     request=SaleUpdateSerializer,
-    responses=None,
+    responses=response_schema,
     parameters=[
         OpenApiParameter(name='pk', description='Sale ID', required=True, type=OpenApiTypes.INT),
     ]

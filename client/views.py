@@ -1,15 +1,13 @@
 from django.db.models import Q
-from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework.decorators import api_view
-from client.models import Client
+from client.schemas import *
 from client.serializers import ClientCreateSerializer, ClientUpdateSerializer, ClientGetSerializer
 from rest_framework.response import Response
 from utils.pagination import paginate
-from utils.responses import success, response_schema
+from utils.responses import success
 
 
-@extend_schema(summary="Client create", request=ClientCreateSerializer, responses=response_schema)
+@create_client_schema
 @api_view(['POST'])
 def create_client(request):
     serializer = ClientCreateSerializer(data=request.data)
@@ -18,14 +16,7 @@ def create_client(request):
     return success
 
 
-@extend_schema(
-    summary="Update Client",
-    request=ClientUpdateSerializer,
-    responses=response_schema,
-    parameters=[
-        OpenApiParameter(name='pk', description='Client ID', required=True, type=OpenApiTypes.INT),
-    ]
-)
+@update_client_schema
 @api_view(['PUT'])
 def update_client(request):
     pk = request.query_params.get('pk')
@@ -36,14 +27,7 @@ def update_client(request):
     return success
 
 
-@extend_schema(
-    summary="Get clients",
-    request=None,
-    responses=ClientGetSerializer,
-    parameters=[
-        OpenApiParameter(name='search', description='FIO or phone', required=False, type=OpenApiTypes.STR),
-    ]
-)
+@get_clients_schema
 @api_view(['GET'])
 def get_clients(request):
     clients = Client.objects.all().order_by('FIO')
@@ -52,13 +36,7 @@ def get_clients(request):
     return paginate(clients, ClientGetSerializer, request)
 
 
-@extend_schema(
-    summary="Get client",
-    responses=ClientGetSerializer,
-    parameters=[
-        OpenApiParameter(name='pk', description='Client ID', required=True, type=OpenApiTypes.INT),
-    ]
-)
+@get_client_schema
 @api_view(['GET'])
 def get_client(request):
     pk = request.query_params.get('pk')

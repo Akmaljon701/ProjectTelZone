@@ -1,15 +1,13 @@
-from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from product.models import Product
-from sale.models import Sale
+from sale.schemas import *
 from sale.serializers import SaleGetSerializer, SaleCreateSerializer, SaleUpdateSerializer
 from utils.pagination import paginate
-from utils.responses import success, response_schema
+from utils.responses import success
 
 
-@extend_schema(summary="Sell product", request=SaleCreateSerializer, responses=response_schema)
+@sell_product_schema
 @api_view(['POST'])
 def sell_product(request):
     serializer = SaleCreateSerializer(data=request.data)
@@ -23,14 +21,7 @@ def sell_product(request):
     return success
 
 
-@extend_schema(
-    summary="Update sale",
-    request=SaleUpdateSerializer,
-    responses=response_schema,
-    parameters=[
-        OpenApiParameter(name='pk', description='Sale ID', required=True, type=OpenApiTypes.INT),
-    ]
-)
+@update_sale_schema
 @api_view(['PUT'])
 def update_sale(request):
     pk = request.query_params.get('pk')
@@ -41,20 +32,14 @@ def update_sale(request):
     return success
 
 
-@extend_schema(summary="Get sales", responses=SaleGetSerializer(many=True))
+@get_sales_schema
 @api_view(['GET'])
 def get_sales(request):
     sales = Sale.objects.select_related('client', 'product').order_by('-id').all()
     return paginate(sales, SaleGetSerializer, request)
 
 
-@extend_schema(
-    summary="Get sale",
-    responses=SaleGetSerializer,
-    parameters=[
-        OpenApiParameter(name='pk', description='Sale ID', required=True, type=OpenApiTypes.INT),
-    ]
-)
+@get_sale_schema
 @api_view(['GET'])
 def get_sale(request):
     pk = request.query_params.get('pk')

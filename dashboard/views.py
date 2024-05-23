@@ -9,16 +9,10 @@ from django.db.models import Sum, F
 from dashboard.models import Expense
 from product.models import Product
 from sale.models import Sale
+from dashboard.schemas import *
 
 
-@extend_schema(
-    summary="Get payment results",
-    responses=None,
-    parameters=[
-        OpenApiParameter(name='from_date', description='from_date', required=False, type=OpenApiTypes.DATE),
-        OpenApiParameter(name='to_date', description='to_date', required=False, type=OpenApiTypes.DATE),
-    ]
-)
+@get_payment_results_schema
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def get_payment_results(request):

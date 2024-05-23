@@ -1,15 +1,13 @@
 from django.db.models import Q
-from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from product.models import Product
+from product.schemas import *
 from product.serializers import ProductCreateSerializer, ProductUpdateSerializer, ProductGetSerializer
 from utils.pagination import paginate
-from utils.responses import success, response_schema
+from utils.responses import success
 
 
-@extend_schema(summary="Create product", request=ProductCreateSerializer, responses=response_schema)
+@create_product_schema
 @api_view(['POST'])
 def create_product(request):
     """
@@ -39,14 +37,7 @@ def create_product(request):
         return Response({'detail': 'Unexpected error! (Note: price or percent must be 0)'}, status=400)
 
 
-@extend_schema(
-    summary="Update Product",
-    request=ProductUpdateSerializer,
-    responses=response_schema,
-    parameters=[
-        OpenApiParameter(name='pk', description='Product ID', required=True, type=OpenApiTypes.INT),
-    ]
-)
+@update_product_schema
 @api_view(['PUT'])
 def update_product(request):
     pk = request.query_params.get('pk')
@@ -57,16 +48,7 @@ def update_product(request):
     return success
 
 
-@extend_schema(
-    request=None,
-    responses=ProductGetSerializer,
-    summary="Get products",
-    parameters=[
-        OpenApiParameter(name='status', description="Choice 'sold' or 'on_sold'",
-                         required=True, type=OpenApiTypes.STR, enum=['sold', 'on_sale']),
-        OpenApiParameter(name='search', description='name or imei', required=False, type=OpenApiTypes.STR),
-    ]
-)
+@get_products_schema
 @api_view(['GET'])
 def get_products(request):
     status = request.query_params.get('status')
@@ -76,13 +58,7 @@ def get_products(request):
     return paginate(clients, ProductGetSerializer, request)
 
 
-@extend_schema(
-    summary="Get product",
-    responses=ProductGetSerializer,
-    parameters=[
-        OpenApiParameter(name='pk', description='Product ID', required=True, type=OpenApiTypes.INT),
-    ]
-)
+@get_product_schema
 @api_view(['GET'])
 def get_product(request):
     pk = request.query_params.get('pk')

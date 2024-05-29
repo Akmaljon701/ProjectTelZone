@@ -1,5 +1,13 @@
-from django.forms import ModelForm, ValidationError, FloatField
-from sale.models import Sale
+from django.forms import ModelForm, ValidationError, FloatField, CharField
+from sale.models import Sale, CreditBase
+
+
+class CreditBaseAdminForm(ModelForm):
+    class Meta:
+        model = CreditBase
+        fields = ['name']
+
+    name = CharField(label='Название')
 
 
 class SaleAdminForm(ModelForm):

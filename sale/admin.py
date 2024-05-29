@@ -1,21 +1,36 @@
 from django.contrib import admin
-from sale.forms import SaleAdminForm
-from sale.models import Sale
+from sale.forms import SaleAdminForm, CreditBaseAdminForm
+from sale.models import Sale, CreditBase
+
+
+class CreditBaseAdmin(admin.ModelAdmin):
+    form = CreditBaseAdminForm
+    list_display = ('id', 'nazvanie')
+    list_display_links = ('id', 'nazvanie')
+    search_fields = ('name',)
+
+    def nazvanie(self, obj):
+        return obj.name
+
+    nazvanie.short_description = "Название"
 
 
 class SaleAdmin(admin.ModelAdmin):
     form = SaleAdminForm
-    list_display = ('id', 'produkt', 'klient', 'prodannaya_tsena', 'data')
-    list_display_links = ('produkt', 'klient', 'prodannaya_tsena', 'data')
+    list_display = ('id', 'produkt', 'klient', 'baza', 'prodannaya_tsena', 'data')
+    list_display_links = ('produkt', 'klient', 'baza', 'prodannaya_tsena', 'data')
     search_fields = ('product__name', 'client__FIO', 'client__phone_number', 'sold_price', 'date')
     list_filter = ['date']
-    autocomplete_fields = ['product', 'client']
+    autocomplete_fields = ['product', 'client', 'credit_base']
 
     def produkt(self, obj):
         return obj.product
 
     def klient(self, obj):
         return obj.client
+
+    def baza(self, obj):
+        return obj.credit_base
 
     def prodannaya_tsena(self, obj):
         return obj.sold_price
@@ -25,6 +40,7 @@ class SaleAdmin(admin.ModelAdmin):
 
     produkt.short_description = "Продукт"
     klient.short_description = "Клиент"
+    baza.short_description = 'Рассрочка База'
     prodannaya_tsena.short_description = 'Проданная цена'
     data.short_description = 'Дата'
 
@@ -38,3 +54,4 @@ class SaleAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Sale, SaleAdmin)
+admin.site.register(CreditBase, CreditBaseAdmin)

@@ -46,4 +46,3 @@ volumes:
     name: telzone_backend_static_volume
   media_volume:
     name: telzone_backend_static_volume
-

@@ -11,6 +11,3 @@ class Client(models.Model):
     class Meta:
         verbose_name_plural = "Клиенты"
 
-
-class Test(models.Model):
-    test = models.CharField(max_length=60)

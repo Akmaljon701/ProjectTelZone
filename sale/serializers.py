@@ -1,7 +1,7 @@
 from rest_framework.serializers import ModelSerializer
 from client.serializers import ClientSerializerForRelation
 from product.serializers import ProductSerializerForRelation
-from sale.models import Sale
+from sale.models import Sale, CreditBase
 
 
 class SaleCreateSerializer(ModelSerializer):
@@ -25,3 +25,19 @@ class SaleGetSerializer(ModelSerializer):
         fields = ('product', 'client', 'sold_price')
 
 
+class CreditBaseCreateSerializer(ModelSerializer):
+    class Meta:
+        model = CreditBase
+        fields = ('name',)
+
+
+class UpdateBaseCreateSerializer(ModelSerializer):
+    class Meta:
+        model = CreditBase
+        fields = ('name',)
+
+
+class GetBaseCreateSerializer(ModelSerializer):
+    class Meta:
+        model = CreditBase
+        fields = ('id', 'name',)

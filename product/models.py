@@ -12,7 +12,7 @@ class Product(models.Model):
     status = models.CharField(max_length=20, default='on_sale', choices=[['on_sale', 'on_sale'], ['sold', 'sold']])
 
     def __str__(self):
-        return f'{self.name} - {self.price} - {self.count}'
+        return f'{self.name}'
 
     class Meta:
         verbose_name_plural = "Продукты"

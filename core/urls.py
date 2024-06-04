@@ -16,9 +16,9 @@ urlpatterns = [
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
     path('api/schema/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
 
-    path('credit_base/create', create_credit_base, name='create_credit_base'),
-    path('credit_base/update', update_credit_base, name='update_credit_base'),
-    path('credit_base/all', get_credit_bases, name='get_credit_bases'),
+    path('credit_base/create/', create_credit_base, name='create_credit_base'),
+    path('credit_base/update/', update_credit_base, name='update_credit_base'),
+    path('credit_base/all/', get_credit_bases, name='get_credit_bases'),
     path('credit_base/', get_credit_base, name='get_credit_base'),
 
     path('user/', include('user.urls')),

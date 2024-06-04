@@ -21,7 +21,7 @@ update_sale_schema = extend_schema(
 
 get_sales_schema = extend_schema(
     summary="Get sales",
-    responses=SaleGetSerializer(many=True)
+    responses=SaleGetSerializer(many=True),
 )
 
 get_sale_schema = extend_schema(
@@ -47,10 +47,12 @@ update_credit_base_schema = extend_schema(
     ]
 )
 
-
 get_credit_bases_schema = extend_schema(
     summary="Get Credit Bases",
-    responses=CreditBaseGetSerializer(many=True)
+    responses=CreditBaseGetSerializer(many=True),
+    parameters=[
+        OpenApiParameter(name='search', description='name', required=False, type=OpenApiTypes.STR),
+    ]
 )
 
 get_credit_base_schema = extend_schema(

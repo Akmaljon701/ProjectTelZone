@@ -1,3 +1,4 @@
+from django.db.models import Q
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from sale.models import Sale, CreditBase
@@ -74,7 +75,10 @@ def update_credit_base(request):
 @get_credit_bases_schema
 @api_view(['GET'])
 def get_credit_bases(request):
+    search = request.query_params.get('search')
     credit_bases = CreditBase.objects.order_by('-id').all()
+    if search:
+        credit_bases = credit_bases.filter(Q(name__icontains=search))
     return paginate(credit_bases, CreditBaseGetSerializer, request)
 
 

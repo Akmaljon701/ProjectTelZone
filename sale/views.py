@@ -39,7 +39,7 @@ def update_sale(request):
 @get_sales_schema
 @api_view(['GET'])
 def get_sales(request):
-    sales = Sale.objects.select_related('client', 'product').order_by('-id').all().prefetch_related('sale_credit_bases')
+    sales = Sale.objects.select_related('client').order_by('-id').all().prefetch_related('product', 'credit_base')
     return paginate(sales, SaleGetSerializer, request)
 
 

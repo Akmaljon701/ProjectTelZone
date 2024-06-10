@@ -4,6 +4,12 @@ from product.serializers import ProductSerializerForRelation
 from sale.models import Sale, CreditBase
 
 
+class CreditBaseSerializerForRelation(ModelSerializer):
+    class Meta:
+        model = CreditBase
+        fields = '__all__'
+
+
 class CreditBaseCreateSerializer(ModelSerializer):
     class Meta:
         model = CreditBase
@@ -37,9 +43,10 @@ class SaleUpdateSerializer(ModelSerializer):
 
 
 class SaleGetSerializer(ModelSerializer):
-    product = ProductSerializerForRelation()
+    product = ProductSerializerForRelation(many=True)
     client = ClientSerializerForRelation()
+    credit_base = CreditBaseSerializerForRelation(many=True)
 
     class Meta:
         model = Sale
-        fields = ('product', 'client', 'sold_price')
+        fields = ('product', 'client', 'sold_price', 'credit_base')

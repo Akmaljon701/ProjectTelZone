@@ -12,7 +12,7 @@ from dashboard.schemas import *
 
 @get_payment_results_schema
 @api_view(['GET'])
-@permission_classes([AllowAny])
+# @permission_classes([AllowAny])
 def get_payment_results(request):
     from_date = request.query_params.get('from_date')
     to_date = request.query_params.get('to_date')
@@ -30,9 +30,9 @@ def get_payment_results(request):
         expenses = Expense.objects.filter(date__range=(from_date, to_date))
         sales = Sale.objects.filter(date__range=(from_date, to_date))
     else:
-        text = "This month's data"
         today = datetime.now().date()
         start_of_month = today.replace(day=1)
+        text = f'{start_of_month} - {today}'
 
         expenses = Expense.objects.filter(date__range=(start_of_month, today))
         sales = Sale.objects.filter(date__range=(start_of_month, today))

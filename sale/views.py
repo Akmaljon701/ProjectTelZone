@@ -47,7 +47,7 @@ def get_sales(request):
 @api_view(['GET'])
 def get_sale(request):
     pk = request.query_params.get('pk')
-    sale = Sale.objects.select_related('client', 'product', 'sale_credit_bases').get(id=pk)
+    sale = Sale.objects.select_related('client').prefetch_related('product', 'credit_base').get(id=pk)
     serializer = SaleGetSerializer(sale)
     return Response(serializer.data, status=200)
 

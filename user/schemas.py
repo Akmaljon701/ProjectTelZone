@@ -8,7 +8,7 @@ get_current_user_schema = extend_schema(
 )
 
 update_custom_user_schema = extend_schema(
-    summary="Get current user",
+    summary="update current user",
     request=CustomUserSerializer,
     responses=response_schema
 )

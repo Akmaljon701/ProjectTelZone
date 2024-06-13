@@ -39,7 +39,7 @@ class SaleCreateSerializer(ModelSerializer):
 class SaleUpdateSerializer(ModelSerializer):
     class Meta:
         model = Sale
-        fields = ('product', 'client', 'sold_price')
+        fields = ['product', 'client', 'sold_price', 'credit_base', 'info']
 
 
 class SaleGetSerializer(ModelSerializer):

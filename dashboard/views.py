@@ -3,11 +3,16 @@ from rest_framework.decorators import api_view
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.decorators import permission_classes
-from django.db.models import Sum, F
+from django.db.models import Sum, F, Q
 from dashboard.models import Expense
+from dashboard.serializers import ExpenseCreateSerializer, ExpenseUpdateSerializer, ExpenseGetSerializer
 from product.models import Product
 from sale.models import Sale
-from dashboard.schemas import *
+from dashboard.schemas import get_payment_results_schema, create_expense_schema, update_expense_schema, \
+    get_expenses_schema, get_expense_schema
+from sale.serializers import SaleGetSerializer
+from utils.pagination import paginate
+from utils.responses import success
 
 
 @get_payment_results_schema
@@ -50,10 +55,46 @@ def get_payment_results(request):
 
     return Response({'text': text,
                      'expenses': total_expenses,
+                     # 'expenses_data': ExpenseGetSerializer(expenses.all(), many=True).data,
                      'sales': total_sales,
+                     # 'sales_data': SaleGetSerializer(sales.all(), many=True).data,
                      'warehouse': {
                          'purchase_price': total_purchase_price,
                          'price': total_price,
                      }}, status=200)
 
 
+@create_expense_schema
+@api_view(['POST'])
+def create_expense(request):
+    serializer = ExpenseCreateSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    serializer.save()
+    return success
+
+
+@update_expense_schema
+@api_view(['PUT'])
+def update_expense(request):
+    pk = request.query_params.get('pk')
+    expense = Expense.objects.get(id=pk)
+    serializer = ExpenseUpdateSerializer(expense, data=request.data, partial=True)
+    serializer.is_valid(raise_exception=True)
+    serializer.save()
+    return success
+
+
+@get_expenses_schema
+@api_view(['GET'])
+def get_expenses(request):
+    expenses = Expense.objects.all().order_by('-id')
+    return paginate(expenses, ExpenseGetSerializer, request)
+
+
+@get_expense_schema
+@api_view(['GET'])
+def get_expense(request):
+    pk = request.query_params.get('pk')
+    expense = Expense.objects.get(id=pk)
+    serializer = ExpenseGetSerializer(expense)
+    return Response(serializer.data, status=200)

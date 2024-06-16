@@ -3,7 +3,11 @@ from django.contrib.auth.models import AbstractUser
 
 
 class CustomUser(AbstractUser):
-    role = models.CharField(max_length=50, choices=[('admin', 'admin'), ('worker', 'worker')])
+    ROLE_CHOICES = [
+        ('admin', 'admin'),
+        ('worker', 'worker')
+    ]
+    role = models.CharField(max_length=50, choices=ROLE_CHOICES)
 
     class Meta:
         verbose_name_plural = "Пользователи"

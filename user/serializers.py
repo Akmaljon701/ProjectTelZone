@@ -6,13 +6,9 @@ from user.models import CustomUser
 class CustomUserSerializer(ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ('id', 'first_name', 'last_name', 'username', 'password',
-                  'is_active', 'role', 'date_joined', 'last_login')
+        fields = ('id', 'first_name', 'last_name', 'username', 'password', 'role')
         extra_kwargs = {
-            'date_joined': {'read_only': True},
             'last_login': {'read_only': True},
-            'is_active': {'read_only': True},
-            'role': {'read_only': True},
             'password': {'write_only': True}
         }
 

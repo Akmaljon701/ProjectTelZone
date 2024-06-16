@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin, Group
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Permission
 
 CustomUser = get_user_model()
 
@@ -11,16 +12,16 @@ admin.site.index_title = "Tel Zone Админ"
 admin.site.site_brand = "Tel Zone"
 admin.site.welcome_sign = "Tel Zone"
 admin.site.copyright = "Tel Zone"
-admin.site.unregister(Group)
+# admin.site.unregister(Group)
+admin.site.register(Permission)
 
 
 class CustomUserAdmin(UserAdmin):
     model = CustomUser
-    list_display = ['id', 'username', 'first_name', 'role', 'is_active']
+    list_display = ['id', 'username', 'first_name', 'role']
     list_display_links = ('id', 'username', 'first_name')
-    list_editable = ('is_active',)
     search_fields = ('username', 'first_name')
-    list_filter = ('is_active', 'role')
+    list_filter = ('role',)
     fieldsets = UserAdmin.fieldsets + (
         ('Custom Fields', {'fields': ('role',)}),
     )

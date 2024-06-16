@@ -4,6 +4,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from django.conf import settings
 from django.conf.urls.static import static
+from core.enums import user_role_choices
 from dashboard.views import create_expense, update_expense, get_expenses, get_expense
 from sale.views import create_credit_base, update_credit_base, get_credit_bases, get_credit_base
 
@@ -16,6 +17,8 @@ urlpatterns = [
 
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
     path('api/schema/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+
+    path('enum/user/role/', user_role_choices, name='user_role_choices'),
 
     path('credit_base/create/', create_credit_base, name='create_credit_base'),
     path('credit_base/update/', update_credit_base, name='update_credit_base'),

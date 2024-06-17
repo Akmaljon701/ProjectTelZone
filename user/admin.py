@@ -18,9 +18,9 @@ admin.site.unregister(Group)
 
 class CustomUserAdmin(UserAdmin):
     model = CustomUser
-    list_display = ['id', 'username', 'first_name', 'role']
-    list_display_links = ('id', 'username', 'first_name')
-    search_fields = ('username', 'first_name')
+    list_display = ['id', 'username', 'first_name', 'last_name', 'role']
+    list_display_links = ('id', 'username', 'first_name', 'last_name',)
+    search_fields = ('username', 'first_name', 'last_name',)
     list_filter = ('role',)
     fieldsets = UserAdmin.fieldsets + (
         ('Custom Fields', {'fields': ('role',)}),

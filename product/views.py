@@ -4,11 +4,13 @@ from rest_framework.response import Response
 from product.schemas import *
 from product.serializers import ProductCreateSerializer, ProductUpdateSerializer, ProductGetSerializer
 from utils.pagination import paginate
+from utils.permissions import check_allowed
 from utils.responses import success
 
 
 @create_product_schema
 @api_view(['POST'])
+@check_allowed('product_can_create')
 def create_product(request):
     """
     Agar percent yozilsa price ga shu percent ga qarab purchase_price ustiga qo'shiladi,
@@ -39,6 +41,7 @@ def create_product(request):
 
 @update_product_schema
 @api_view(['PUT'])
+@check_allowed('product_can_update')
 def update_product(request):
     pk = request.query_params.get('pk')
     product = Product.objects.get(id=pk)
@@ -50,6 +53,7 @@ def update_product(request):
 
 @get_products_schema
 @api_view(['GET'])
+@check_allowed('product_can_view')
 def get_products(request):
     status = request.query_params.get('status')
     search = request.query_params.get('search')
@@ -60,6 +64,7 @@ def get_products(request):
 
 @get_product_schema
 @api_view(['GET'])
+@check_allowed('product_can_view')
 def get_product(request):
     pk = request.query_params.get('pk')
     client = Product.objects.get(id=pk)

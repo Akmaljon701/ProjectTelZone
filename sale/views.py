@@ -8,11 +8,13 @@ from sale.schemas import update_sale_schema, get_sales_schema, get_sale_schema, 
 from sale.serializers import SaleGetSerializer, SaleUpdateSerializer, CreditBaseCreateSerializer, SaleCreateSerializer, \
     CreditBaseUpdateSerializer, CreditBaseGetSerializer
 from utils.pagination import paginate
+from utils.permissions import check_allowed
 from utils.responses import success
 
 
 @create_sale_schema
 @api_view(['POST'])
+@check_allowed('sale_can_create')
 def create_sale(request):
     serializer = SaleCreateSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
@@ -27,6 +29,7 @@ def create_sale(request):
 
 @update_sale_schema
 @api_view(['PUT'])
+@check_allowed('sale_can_update')
 def update_sale(request):
     pk = request.query_params.get('pk')
     sale = Sale.objects.get(id=pk)
@@ -38,6 +41,7 @@ def update_sale(request):
 
 @get_sales_schema
 @api_view(['GET'])
+@check_allowed('sale_can_view')
 def get_sales(request):
     sales = Sale.objects.select_related('client').order_by('-id').all().prefetch_related('product', 'credit_base')
     return paginate(sales, SaleGetSerializer, request)
@@ -45,6 +49,7 @@ def get_sales(request):
 
 @get_sale_schema
 @api_view(['GET'])
+@check_allowed('sale_can_view')
 def get_sale(request):
     pk = request.query_params.get('pk')
     sale = Sale.objects.select_related('client').prefetch_related('product', 'credit_base').get(id=pk)
@@ -54,6 +59,7 @@ def get_sale(request):
 
 @create_credit_base_schema
 @api_view(['POST'])
+@check_allowed('credit_base_can_create')
 def create_credit_base(request):
     serializer = CreditBaseCreateSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
@@ -63,6 +69,7 @@ def create_credit_base(request):
 
 @update_credit_base_schema
 @api_view(['PUT'])
+@check_allowed('credit_base_can_update')
 def update_credit_base(request):
     pk = request.query_params.get('pk')
     credit_base = CreditBase.objects.get(id=pk)
@@ -74,6 +81,7 @@ def update_credit_base(request):
 
 @get_credit_bases_schema
 @api_view(['GET'])
+@check_allowed('credit_base_can_view')
 def get_credit_bases(request):
     search = request.query_params.get('search')
     credit_bases = CreditBase.objects.order_by('-id').all()
@@ -84,6 +92,7 @@ def get_credit_bases(request):
 
 @get_credit_base_schema
 @api_view(['GET'])
+@check_allowed('credit_base_can_view')
 def get_credit_base(request):
     pk = request.query_params.get('pk')
     credit_base = CreditBase.objects.get(id=pk)

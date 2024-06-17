@@ -12,11 +12,13 @@ from dashboard.schemas import get_payment_results_schema, create_expense_schema,
     get_expenses_schema, get_expense_schema
 from sale.serializers import SaleGetSerializer
 from utils.pagination import paginate
+from utils.permissions import check_allowed
 from utils.responses import success
 
 
 @get_payment_results_schema
 @api_view(['GET'])
+@check_allowed('dashboard_can_view')
 # @permission_classes([AllowAny])
 def get_payment_results(request):
     from_date = request.query_params.get('from_date')
@@ -66,6 +68,7 @@ def get_payment_results(request):
 
 @create_expense_schema
 @api_view(['POST'])
+@check_allowed('expense_can_create')
 def create_expense(request):
     serializer = ExpenseCreateSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
@@ -75,6 +78,7 @@ def create_expense(request):
 
 @update_expense_schema
 @api_view(['PUT'])
+@check_allowed('expense_can_update')
 def update_expense(request):
     pk = request.query_params.get('pk')
     expense = Expense.objects.get(id=pk)
@@ -86,6 +90,7 @@ def update_expense(request):
 
 @get_expenses_schema
 @api_view(['GET'])
+@check_allowed('expense_can_view')
 def get_expenses(request):
     expenses = Expense.objects.all().order_by('-id')
     return paginate(expenses, ExpenseGetSerializer, request)
@@ -93,6 +98,7 @@ def get_expenses(request):
 
 @get_expense_schema
 @api_view(['GET'])
+@check_allowed('expense_can_view')
 def get_expense(request):
     pk = request.query_params.get('pk')
     expense = Expense.objects.get(id=pk)

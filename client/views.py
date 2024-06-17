@@ -4,11 +4,13 @@ from client.schemas import *
 from client.serializers import ClientCreateSerializer, ClientUpdateSerializer, ClientGetSerializer
 from rest_framework.response import Response
 from utils.pagination import paginate
+from utils.permissions import check_allowed
 from utils.responses import success
 
 
 @create_client_schema
 @api_view(['POST'])
+@check_allowed('client_can_create')
 def create_client(request):
     serializer = ClientCreateSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
@@ -18,6 +20,7 @@ def create_client(request):
 
 @update_client_schema
 @api_view(['PUT'])
+@check_allowed('client_can_update')
 def update_client(request):
     pk = request.query_params.get('pk')
     client = Client.objects.get(id=pk)
@@ -29,6 +32,7 @@ def update_client(request):
 
 @get_clients_schema
 @api_view(['GET'])
+@check_allowed('client_can_view')
 def get_clients(request):
     clients = Client.objects.all().order_by('FIO')
     search = request.query_params.get('search')
@@ -38,6 +42,7 @@ def get_clients(request):
 
 @get_client_schema
 @api_view(['GET'])
+@check_allowed('client_can_view')
 def get_client(request):
     pk = request.query_params.get('pk')
     client = Client.objects.get(id=pk)

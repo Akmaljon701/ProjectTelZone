@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin, Group
 from django.contrib.auth import get_user_model
-from django.contrib.auth.models import Permission
+from user.models import CustomUserPermission
 
 CustomUser = get_user_model()
 
@@ -12,8 +12,8 @@ admin.site.index_title = "Tel Zone Админ"
 admin.site.site_brand = "Tel Zone"
 admin.site.welcome_sign = "Tel Zone"
 admin.site.copyright = "Tel Zone"
-# admin.site.unregister(Group)
-admin.site.register(Permission)
+admin.site.unregister(Group)
+# admin.site.register(CustomUserPermission)
 
 
 class CustomUserAdmin(UserAdmin):

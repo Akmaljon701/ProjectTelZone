@@ -1,6 +1,7 @@
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema, OpenApiParameter
-from user.serializers import CustomUserSerializer
+from user.serializers import CustomUserSerializer, CustomUserGetSerializer, CurrentUserUpdateSerializer, \
+    CurrentUserGetSerializer, CustomUserPermissionSerializer
 from utils.responses import response_schema
 
 create_user_schema = extend_schema(
@@ -21,7 +22,7 @@ update_user_schema = extend_schema(
 get_users_schema = extend_schema(
     summary="Get users",
     request=None,
-    responses=CustomUserSerializer,
+    responses=CustomUserGetSerializer,
     parameters=[
         OpenApiParameter(name='search', description='username, first_name, last_name',
                          required=False, type=OpenApiTypes.STR),
@@ -32,7 +33,7 @@ get_users_schema = extend_schema(
 
 get_user_schema = extend_schema(
     summary="Get user",
-    responses=CustomUserSerializer,
+    responses=CustomUserGetSerializer,
     parameters=[
         OpenApiParameter(name='pk', description='User ID', required=True, type=OpenApiTypes.INT),
     ]
@@ -40,11 +41,20 @@ get_user_schema = extend_schema(
 
 get_current_user_schema = extend_schema(
     summary="Get current user",
-    responses=CustomUserSerializer
+    responses=CurrentUserGetSerializer
 )
 
-update_custom_user_schema = extend_schema(
+update_current_user_schema = extend_schema(
     summary="update current user",
-    request=CustomUserSerializer,
+    request=CurrentUserUpdateSerializer,
     responses=response_schema
+)
+
+update_user_permissions_schema = extend_schema(
+    summary="User permissions update",
+    request=CustomUserPermissionSerializer,
+    responses=response_schema,
+    parameters=[
+        OpenApiParameter(name='pk', description='User ID', required=True, type=OpenApiTypes.INT),
+    ]
 )

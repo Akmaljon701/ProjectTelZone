@@ -47,8 +47,24 @@ def update_product(request):
     product = Product.objects.get(id=pk)
     serializer = ProductUpdateSerializer(product, data=request.data, partial=True)
     serializer.is_valid(raise_exception=True)
-    serializer.save()
-    return success
+    purchase_price = serializer.validated_data['purchase_price']
+    percent = serializer.validated_data['percent']
+    price = serializer.validated_data['price']
+    if percent == 0:
+        if purchase_price >= price:
+            return Response({'detail': 'The price cannot be less than or equal to the purchased price!'}, status=422)
+        difference = price - purchase_price
+        percent = (difference * 100) / purchase_price
+        serializer.save(percent=percent)
+        return success
+    elif price == 0:
+        if percent <= 0:
+            return Response("Price must not be equal to or less than 0!", status=422)
+        price = purchase_price + ((purchase_price * percent) / 100)
+        serializer.save(price=price)
+        return success
+    else:
+        return Response({'detail': 'Unexpected error! (Note: price or percent must be 0)'}, status=400)
 
 
 @get_products_schema

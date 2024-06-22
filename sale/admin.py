@@ -1,48 +1,28 @@
 from django.contrib import admin
-from sale.forms import SaleAdminForm, CreditBaseAdminForm
 from sale.models import Sale, CreditBase
 
 
 class CreditBaseAdmin(admin.ModelAdmin):
-    form = CreditBaseAdminForm
-    list_display = ('id', 'nazvanie')
-    list_display_links = ('id', 'nazvanie')
+    list_display = ('id', 'name')
+    list_display_links = ('id', 'name')
     search_fields = ('name',)
-
-    def nazvanie(self, obj):
-        return obj.name
-
-    nazvanie.short_description = "Название"
 
 
 class SaleAdmin(admin.ModelAdmin):
-    form = SaleAdminForm
-    list_display = ('id', 'produkt', 'klient', 'baza', 'prodannaya_tsena', 'data')
-    list_display_links = ('produkt', 'klient', 'baza', 'prodannaya_tsena', 'data')
+    list_display = ('id', 'get_products', 'client', 'get_credit_bases', 'sold_price', 'date')
+    list_display_links = ('get_products', 'client', 'get_credit_bases', 'sold_price', 'date')
     search_fields = ('product__name', 'client__FIO', 'client__phone_number', 'sold_price', 'date')
     list_filter = ['date']
     autocomplete_fields = ['product', 'client', 'credit_base']
 
-    def produkt(self, obj):
+    def get_products(self, obj):
         return ", ".join([product.name for product in obj.product.all()])
 
-    def klient(self, obj):
-        return obj.client
-
-    def baza(self, obj):
+    def get_credit_bases(self, obj):
         return ", ".join([credit_base.name for credit_base in obj.credit_base.all()])
 
-    def prodannaya_tsena(self, obj):
-        return obj.sold_price
-
-    def data(self, obj):
-        return obj.date
-
-    produkt.short_description = "Продукт"
-    klient.short_description = "Клиент"
-    baza.short_description = 'Рассрочка База'
-    prodannaya_tsena.short_description = 'Проданная цена'
-    data.short_description = 'Дата'
+    get_products.short_description = 'Продукти'
+    get_credit_bases.short_description = 'Рассрочка Бази'
 
     def save_model(self, request, obj, form, change):
         if not obj.pk:

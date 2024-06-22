@@ -32,12 +32,14 @@ def create_user(request):
 def update_user(request):
     pk = request.query_params.get('pk')
     user = CustomUser.objects.get(id=pk)
+    old_user_role = user.role
     serializer = CustomUserSerializer(user, data=request.data, partial=True)
     serializer.is_valid(raise_exception=True)
     updated_user = serializer.save()
-    if user.role != updated_user.role:
+    if old_user_role != updated_user.role:
         if updated_user.role == 'admin':
-            CustomUserPermission.objects.get(user=updated_user).delete()
+            per = CustomUserPermission.objects.filter(user=updated_user).delete()
+            print(per)
         if updated_user.role == 'worker':
             CustomUserPermission.objects.create(user=user)
     return success

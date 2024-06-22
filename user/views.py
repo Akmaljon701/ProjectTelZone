@@ -28,12 +28,18 @@ def create_user(request):
 @update_user_schema
 @api_view(['PUT'])
 @check_allowed('user_can_update')
+@transaction.atomic
 def update_user(request):
     pk = request.query_params.get('pk')
     user = CustomUser.objects.get(id=pk)
     serializer = CustomUserSerializer(user, data=request.data, partial=True)
     serializer.is_valid(raise_exception=True)
-    serializer.save()
+    updated_user = serializer.save()
+    if user.role != updated_user.role:
+        if updated_user.role == 'admin':
+            CustomUserPermission.objects.get(user=updated_user).delete()
+        if updated_user.role == 'worker':
+            CustomUserPermission.objects.create(user=user)
     return success
 
 

@@ -3,7 +3,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from product.schemas import *
 from product.serializers import ProductCreateSerializer, ProductUpdateSerializer, ProductGetSerializer
-from utils.pagination import paginate
+from utils.pagination import paginate, CustomOffSetPagination
 from utils.permissions import check_allowed
 from utils.responses import success
 
@@ -75,7 +75,11 @@ def get_products(request):
     search = request.query_params.get('search')
     clients = Product.objects.filter(status=status).all().order_by('-id')
     if search: clients = clients.filter(Q(name__icontains=search) | Q(imei__icontains=search))
-    return paginate(clients, ProductGetSerializer, request)
+
+    paginator = CustomOffSetPagination()
+    paginated_order = paginator.paginate_queryset(clients, request)
+    serializer = ProductGetSerializer(paginated_order, many=True, context={'request': request})
+    return paginator.get_paginated_response(serializer.data)
 
 
 @get_product_schema

@@ -3,6 +3,12 @@ from rest_framework.serializers import ModelSerializer
 from user.models import CustomUser, CustomUserPermission
 
 
+class CustomUserSerializerForRelation(ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ['id', 'username']
+
+
 class CustomUserPermissionSerializerForRelation(ModelSerializer):
 
     class Meta:

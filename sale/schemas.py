@@ -1,7 +1,7 @@
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from sale.serializers import SaleGetSerializer, SaleCreateSerializer, SaleUpdateSerializer, CreditBaseCreateSerializer, \
-    CreditBaseUpdateSerializer, CreditBaseGetSerializer
+    CreditBaseUpdateSerializer, CreditBaseGetSerializer, SalesGetSerializer
 from utils.responses import response_schema
 
 create_sale_schema = extend_schema(
@@ -21,7 +21,7 @@ update_sale_schema = extend_schema(
 
 get_sales_schema = extend_schema(
     summary="Get sales",
-    responses=SaleGetSerializer(many=True),
+    responses=SalesGetSerializer(many=True),
 )
 
 get_sale_schema = extend_schema(

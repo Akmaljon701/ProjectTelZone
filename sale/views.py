@@ -6,7 +6,7 @@ from sale.schemas import update_sale_schema, get_sales_schema, get_sale_schema, 
     create_credit_base_schema, update_credit_base_schema, get_credit_bases_schema, get_credit_base_schema, \
     create_sale_schema
 from sale.serializers import SaleGetSerializer, SaleUpdateSerializer, CreditBaseCreateSerializer, SaleCreateSerializer, \
-    CreditBaseUpdateSerializer, CreditBaseGetSerializer
+    CreditBaseUpdateSerializer, CreditBaseGetSerializer, SalesGetSerializer
 from utils.pagination import paginate
 from utils.permissions import check_allowed
 from utils.responses import success
@@ -44,7 +44,7 @@ def update_sale(request):
 @check_allowed('sale_can_view')
 def get_sales(request):
     sales = Sale.objects.select_related('client').order_by('-id').all().prefetch_related('product', 'credit_base')
-    return paginate(sales, SaleGetSerializer, request)
+    return paginate(sales, SalesGetSerializer, request)
 
 
 @get_sale_schema

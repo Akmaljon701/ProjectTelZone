@@ -2,6 +2,7 @@ from django.db import models
 from client.models import Client
 from product.models import Product
 from django.core.exceptions import ValidationError
+from user.models import CustomUser
 
 
 class CreditBase(models.Model):
@@ -26,6 +27,7 @@ class Sale(models.Model):
     credit_base = models.ManyToManyField(CreditBase, related_name='credit_bases', verbose_name='Рассрочка Бази')
     info = models.TextField(blank=True, null=True, verbose_name='Информация')
     date = models.DateField(auto_now_add=True, verbose_name='Дата')
+    sold_user = models.ForeignKey(CustomUser, on_delete=models.PROTECT)
 
     class Meta:
         verbose_name_plural = "Продажи"

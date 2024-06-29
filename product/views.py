@@ -88,5 +88,5 @@ def get_products(request):
 def get_product(request):
     pk = request.query_params.get('pk')
     client = Product.objects.get(id=pk)
-    serializer = ProductGetSerializer(client)
+    serializer = ProductGetSerializer(client, context={'request': request})
     return Response(serializer.data, status=200)

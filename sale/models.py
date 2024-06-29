@@ -27,7 +27,7 @@ class Sale(models.Model):
     credit_base = models.ManyToManyField(CreditBase, related_name='credit_bases', verbose_name='Рассрочка Бази')
     info = models.TextField(blank=True, null=True, verbose_name='Информация')
     date = models.DateField(auto_now_add=True, verbose_name='Дата')
-    sold_user = models.ForeignKey(CustomUser, on_delete=models.PROTECT)
+    sold_user = models.ForeignKey(CustomUser, on_delete=models.PROTECT, blank=True, null=True)
 
     class Meta:
         verbose_name_plural = "Продажи"

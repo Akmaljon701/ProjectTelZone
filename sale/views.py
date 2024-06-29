@@ -18,7 +18,7 @@ from utils.responses import success
 def create_sale(request):
     serializer = SaleCreateSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
-    sale = serializer.save()
+    sale = serializer.save(sold_user=request.user)
     for product in sale.product.all():
         product.count -= 1
         if product.count == 0:

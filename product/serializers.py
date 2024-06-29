@@ -1,6 +1,7 @@
 from rest_framework.fields import SerializerMethodField
 from rest_framework.serializers import ModelSerializer
 from product.models import Product
+from user.models import CustomUserPermission
 
 
 class ProductSerializerForRelation(ModelSerializer):
@@ -32,7 +33,9 @@ class ProductGetSerializer(ModelSerializer):
     def get_purchase_price(self, obj):
         user = self.context['request'].user
         if user.role == 'worker':
-            return 0
+            permission = CustomUserPermission.objects.get(user=user)
+            if not permission.product_can_update:
+                return 0
         return obj.purchase_price
 
     def get_percent(self, obj):

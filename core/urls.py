@@ -9,7 +9,7 @@ from dashboard.views import create_expense, update_expense, get_expenses, get_ex
 from sale.views import create_credit_base, update_credit_base, get_credit_bases, get_credit_base
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    # path('admin/', admin.site.urls),
     path("__debug__/", include("debug_toolbar.urls")),
 
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),

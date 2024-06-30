@@ -32,6 +32,9 @@ get_expenses_schema = extend_schema(
     request=None,
     responses=ExpenseGetSerializer,
     summary="Get expenses",
+    parameters=[
+        OpenApiParameter(name='search', description='type', required=False, type=OpenApiTypes.STR)
+    ]
 )
 
 get_expense_schema = extend_schema(

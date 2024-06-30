@@ -22,6 +22,9 @@ update_sale_schema = extend_schema(
 get_sales_schema = extend_schema(
     summary="Get sales",
     responses=SalesGetSerializer(many=True),
+    parameters=[
+        OpenApiParameter(name='search', description='client fio or phone number', required=False, type=OpenApiTypes.STR)
+    ]
 )
 
 get_sale_schema = extend_schema(

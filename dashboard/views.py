@@ -92,7 +92,9 @@ def update_expense(request):
 @api_view(['GET'])
 @check_allowed('expense_can_view')
 def get_expenses(request):
+    search = request.query_params.get('search')
     expenses = Expense.objects.all().order_by('-id')
+    if search: expenses = expenses.filter(Q(type__icontains=search))
     return paginate(expenses, ExpenseGetSerializer, request)
 
 

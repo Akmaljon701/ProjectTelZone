@@ -43,7 +43,9 @@ def update_sale(request):
 @api_view(['GET'])
 @check_allowed('sale_can_view')
 def get_sales(request):
+    search = request.query_params.get('search')
     sales = Sale.objects.select_related('client').order_by('-id').all().prefetch_related('product', 'credit_base')
+    if search: sales = sales.filter(Q(client__FIO__icontains=search) | Q(client__phone_number__icontains=search))
     return paginate(sales, SalesGetSerializer, request)
 
 

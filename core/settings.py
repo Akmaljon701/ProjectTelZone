@@ -11,7 +11,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('SECRET_KEY')
 
 hostname = socket.gethostname()
-if hostname == 'green-liveconsole2':
+if hostname == '10.0.4.161 172.17.0.1':
     DEBUG = True
     DATABASES = {
         'default': {

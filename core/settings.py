@@ -9,7 +9,9 @@ load_dotenv()
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 hostname = socket.gethostname()
-if hostname == '10.0.4.161' or hostname == 'Asus':
+IPs = socket.gethostbyname_ex(hostname)[-1]
+
+if '10.0.4.161' in IPs or '172.17.0.1' in IPs or hostname == 'Asus':
     SECRET_KEY = 'wHCPlW$IRybu-3#cPcveG^jgI(#O4E^hRgWbAUGjQ%sMZ#ODp9'
     DEBUG = True
     DATABASES = {

@@ -11,7 +11,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 hostname = socket.gethostname()
 IP = socket.gethostbyname_ex(hostname)[-1][0]
 
-if IP == '10.0.4.161' or hostname == 'Asus':
+if IP == '127.0.0.1':
     SECRET_KEY = 'wHCPlW$IRybu-3#cPcveG^jgI(#O4E^hRgWbAUGjQ%sMZ#ODp9'
     DEBUG = True
     DATABASES = {

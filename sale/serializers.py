@@ -33,14 +33,14 @@ class SaleCreateSerializer(ModelSerializer):
 
     class Meta:
         model = Sale
-        fields = ['product', 'client', 'sold_price', 'credit_base', 'info', 'date']
+        fields = ['product', 'client', 'sold_price', 'credit_base', 'discount', 'info', 'date']
         read_only_fields = ['date']
 
 
 class SaleUpdateSerializer(ModelSerializer):
     class Meta:
         model = Sale
-        fields = ['product', 'client', 'sold_price', 'credit_base', 'info']
+        fields = ['product', 'client', 'sold_price', 'discount', 'credit_base', 'info']
 
 
 class SalesGetSerializer(ModelSerializer):
@@ -51,7 +51,7 @@ class SalesGetSerializer(ModelSerializer):
 
     class Meta:
         model = Sale
-        fields = ('id', 'product', 'client', 'sold_price', 'credit_base', 'info', 'date', 'sold_user')
+        fields = ('id', 'product', 'client', 'sold_price', 'credit_base', 'discount', 'info', 'date', 'sold_user')
 
 
 class SaleGetSerializer(ModelSerializer):

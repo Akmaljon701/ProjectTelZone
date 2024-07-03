@@ -24,7 +24,9 @@ class Sale(models.Model):
     product = models.ManyToManyField(Product, related_name='product_sales', verbose_name='Продукти')
     client = models.ForeignKey(Client, related_name='client_sales', on_delete=models.PROTECT, verbose_name='Клиент')
     sold_price = models.FloatField(verbose_name='Проданная цена', validators=[validate_sold_price])
-    credit_base = models.ManyToManyField(CreditBase, related_name='credit_bases', verbose_name='Рассрочка Бази')
+    credit_base = models.ManyToManyField(CreditBase, related_name='credit_bases', verbose_name='Рассрочка Бази',
+                                         blank=True)
+    discount = models.FloatField(default=0)
     info = models.TextField(blank=True, null=True, verbose_name='Информация')
     date = models.DateField(auto_now_add=True, verbose_name='Дата')
     sold_user = models.ForeignKey(CustomUser, on_delete=models.PROTECT, blank=True, null=True)

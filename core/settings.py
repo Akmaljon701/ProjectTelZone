@@ -1,33 +1,38 @@
 from datetime import timedelta
 from pathlib import Path
 import os
+import socket
 from dotenv import load_dotenv
 
 load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# SECRET_KEY = 'wHCPlW$IRybu-3#cPcveG^jgI(#O4E^hRgWbAUGjQ%sMZ#ODp9'
-# DEBUG = True
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
+hostname = socket.gethostname()
+IP = socket.gethostbyname_ex(hostname)[-1][0]
 
-SECRET_KEY = os.environ.get('SECRET_KEY')
-DEBUG = False
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.environ.get("SQL_DATABASE"),
-        'USER': os.environ.get("SQL_USER"),
-        'PASSWORD': os.environ.get("SQL_PASSWORD"),
-        'HOST': os.environ.get("SQL_HOST"),
-        'PORT': os.environ.get("SQL_PORT"),
+if IP == '127.0.0.1' or hostname == 'Asus':
+    SECRET_KEY = 'wHCPlW$IRybu-3#cPcveG^jgI(#O4E^hRgWbAUGjQ%sMZ#ODp9'
+    DEBUG = True
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
     }
-}
+else:
+    SECRET_KEY = os.environ.get('SECRET_KEY')
+    DEBUG = False
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': os.environ.get("SQL_DATABASE"),
+            'USER': os.environ.get("SQL_USER"),
+            'PASSWORD': os.environ.get("SQL_PASSWORD"),
+            'HOST': os.environ.get("SQL_HOST"),
+            'PORT': os.environ.get("SQL_PORT"),
+        }
+    }
 
 ALLOWED_HOSTS = ['*']
 

@@ -36,6 +36,8 @@ def export_sales_to_excel(request):
         ).select_related('client', 'sold_user').prefetch_related('product', 'credit_base')
 
     sales_data = []
+    total_sold_price = 0  # Initialize total sold price
+
     for sale in sales:
         products = ', '.join([str(product) for product in sale.product.all()])
         credit_bases = ', '.join([str(credit_base) for credit_base in sale.credit_base.all()])
@@ -50,6 +52,17 @@ def export_sales_to_excel(request):
             sale.date.strftime('%Y-%m-%d'),
             sale.sold_user.username
         ])
+
+        total_sold_price += sale.sold_price  # Accumulate total sold price
+
+    # Calculate total discount
+    total_discount = sum([sale.discount for sale in sales])
+
+    # Append total row to sales_data
+    sales_data.append([
+        'Umumiy', '', total_sold_price, '', '',
+        total_discount, '', '', ''
+    ])
 
     df = pd.DataFrame(sales_data, columns=[
         'Mijoz', 'Mijoz raqami', 'Sotilgan narx', 'Mahsulotlar',
@@ -69,7 +82,7 @@ def export_sales_to_excel(request):
             for cell in column:
                 try:
                     if len(str(cell.value)) > max_length:
-                        max_length = len(cell.value)
+                        max_length = len(str(cell.value))
                 except:
                     pass
             adjusted_width = (max_length + 2)

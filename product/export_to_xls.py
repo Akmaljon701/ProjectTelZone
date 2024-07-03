@@ -1,4 +1,5 @@
 import pandas as pd
+from django.db.models import Sum, F
 from django.http import HttpResponse
 from openpyxl.utils import get_column_letter
 from rest_framework.decorators import api_view
@@ -11,7 +12,18 @@ from utils.permissions import allowed_only_admin
 @api_view(['GET'])
 @allowed_only_admin()
 def export_products_to_excel(request):
-    products = Product.objects.filter(status='on_sale').all()
+    products = Product.objects.filter(status='on_sale').annotate(
+        total_purchase_price=Sum(F('count') * F('purchase_price')),
+        total_percent=Sum(F('count') * F('percent')),
+        total_price=Sum(F('count') * F('price')),
+    ).all()
+
+    total_sum = products.aggregate(
+        total_purchase_price_sum=Sum(F('total_purchase_price')),
+        total_percent_sum=Sum(F('total_percent')),
+        total_price_sum=Sum(F('total_price')),
+    )
+
     products_data = []
     for product in products:
         products_data.append([
@@ -22,12 +34,24 @@ def export_products_to_excel(request):
             product.price,
             product.imei,
             product.date.strftime('%Y-%m-%d'),
-            product.status
+            product.status,
+            product.total_purchase_price,
+            product.total_percent,
+            product.total_price
         ])
+
+    products_data.append([
+        'Umumiy', '', '', '', '',
+        '', '', '',
+        total_sum['total_purchase_price_sum'] if total_sum['total_purchase_price_sum'] else 0,
+        total_sum['total_percent_sum'] if total_sum['total_percent_sum'] else 0,
+        total_sum['total_price_sum'] if total_sum['total_price_sum'] else 0
+    ])
 
     df = pd.DataFrame(products_data, columns=[
         'Nomi', 'Soni', 'Olingan narx', 'Foiz',
-        'Sotuv narx', 'IMEI', 'Sana', 'Status'
+        'Sotuv narx', 'IMEI', 'Sana', 'Status',
+        'Umumiy olingan narx', 'Umumiy foiz', 'Umumiy sotuv narx'
     ])
 
     response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')

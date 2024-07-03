@@ -36,3 +36,8 @@ get_product_schema = extend_schema(
         OpenApiParameter(name='pk', description='Product ID', required=True, type=OpenApiTypes.INT),
     ]
 )
+
+export_products_to_excel_schema = extend_schema(
+    summary="Export products that unsold",
+    responses=None
+)

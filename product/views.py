@@ -73,11 +73,11 @@ def update_product(request):
 def get_products(request):
     status = request.query_params.get('status')
     search = request.query_params.get('search')
-    clients = Product.objects.filter(status=status).all().order_by('-id')
-    if search: clients = clients.filter(Q(name__icontains=search) | Q(imei__icontains=search))
+    products = Product.objects.filter(status=status).all().order_by('-id')
+    if search: products = products.filter(Q(name__icontains=search) | Q(imei__icontains=search))
 
     paginator = CustomOffSetPagination()
-    paginated_order = paginator.paginate_queryset(clients, request)
+    paginated_order = paginator.paginate_queryset(products, request)
     serializer = ProductGetSerializer(paginated_order, many=True, context={'request': request})
     return paginator.get_paginated_response(serializer.data)
 

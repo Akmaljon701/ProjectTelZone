@@ -26,6 +26,7 @@ class CustomUserPermission(models.Model):
 
     sale_can_create = models.BooleanField(default=False)
     sale_can_update = models.BooleanField(default=False)
+    sale_can_delete = models.BooleanField(default=False)
     sale_can_view = models.BooleanField(default=True)
 
     credit_base_can_create = models.BooleanField(default=False)

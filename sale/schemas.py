@@ -19,11 +19,24 @@ update_sale_schema = extend_schema(
     ]
 )
 
+delete_sale_schema = extend_schema(
+    summary="Delete sale",
+    request=None,
+    responses=response_schema,
+    parameters=[
+        OpenApiParameter(name='pk', description='Sale ID', required=True, type=OpenApiTypes.INT),
+    ]
+)
+
 get_sales_schema = extend_schema(
     summary="Get sales",
     responses=SalesGetSerializer(many=True),
     parameters=[
-        OpenApiParameter(name='search', description='client fio or phone number', required=False, type=OpenApiTypes.STR)
+        OpenApiParameter(name='search', description='client fio, client phone number, product name, product imei',
+                         required=False, type=OpenApiTypes.STR),
+        OpenApiParameter(name='from_date', description='from_date', required=False, type=OpenApiTypes.DATE),
+        OpenApiParameter(name='to_date', description='to_date', required=False, type=OpenApiTypes.DATE),
+        OpenApiParameter(name='user', description='User ID', required=False, type=OpenApiTypes.INT),
     ]
 )
 

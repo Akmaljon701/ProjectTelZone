@@ -78,3 +78,13 @@ get_credit_base_schema = extend_schema(
         OpenApiParameter(name='pk', description='Credit Base ID', required=True, type=OpenApiTypes.INT),
     ]
 )
+
+export_sales_to_excel_schema = extend_schema(
+    summary="Export sales",
+    responses=None,
+    parameters=[
+        OpenApiParameter(name='pk', description='User ID', required=False, type=OpenApiTypes.INT),
+        OpenApiParameter(name='from_date', description='from_date', required=True, type=OpenApiTypes.DATE),
+        OpenApiParameter(name='to_date', description='to_date', required=True, type=OpenApiTypes.DATE),
+    ]
+)

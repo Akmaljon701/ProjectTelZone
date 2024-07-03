@@ -1,7 +1,8 @@
 from rest_framework.fields import SerializerMethodField
-from rest_framework.serializers import ModelSerializer
+from rest_framework.serializers import ModelSerializer, FloatField
 from product.models import Product
 from user.models import CustomUserPermission
+from drf_spectacular.utils import extend_schema_field
 
 
 class ProductSerializerForRelation(ModelSerializer):
@@ -30,7 +31,8 @@ class ProductGetSerializer(ModelSerializer):
         model = Product
         fields = '__all__'
 
-    def get_purchase_price(self, obj):
+    @extend_schema_field(FloatField)
+    def get_purchase_price(self, obj) -> float:
         user = self.context['request'].user
         if user.role == 'worker':
             permission = CustomUserPermission.objects.get(user=user)
@@ -38,7 +40,8 @@ class ProductGetSerializer(ModelSerializer):
                 return 0
         return obj.purchase_price
 
-    def get_percent(self, obj):
+    @extend_schema_field(FloatField)
+    def get_percent(self, obj) -> float:
         user = self.context['request'].user
         if user.role == 'worker':
             return 0

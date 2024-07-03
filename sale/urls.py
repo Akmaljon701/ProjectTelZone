@@ -8,5 +8,5 @@ urlpatterns = [
     path('delete/', delete_sale, name='delete_sale'),
     path('all/', get_sales, name='get_sales'),
     path('', get_sale, name='get_sale'),
-    # path('export-sales/', export_sales_to_excel, name='export_sales_to_excel'),
+    path('export/', export_sales_to_excel, name='export_sales_to_excel'),
 ]

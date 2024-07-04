@@ -3,7 +3,8 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from user.models import CustomUser, CustomUserPermission
 from user.schemas import create_user_schema, get_current_user_schema, update_user_schema, \
-    get_users_schema, get_user_schema, update_current_user_schema, update_user_permissions_schema
+    get_users_schema, get_user_schema, update_current_user_schema, update_user_permissions_schema, \
+    get_users_for_select_schema
 from user.serializers import CustomUserSerializer, CustomUserGetSerializer, CurrentUserUpdateSerializer, \
     CurrentUserGetSerializer, CustomUserPermissionSerializer
 from utils.pagination import paginate
@@ -57,6 +58,17 @@ def get_users(request):
                                     Q(last_name__icontains=search))
     if enum: users = users.filter(role=enum)
     return paginate(users, CustomUserGetSerializer, request)
+
+
+@get_users_for_select_schema
+@api_view(['GET'])
+@check_allowed('user_can_view')
+def get_users_for_select(request):
+    search = request.query_params.get('search')
+    users = CustomUser.objects.select_related('permission_fields').all().order_by('username')
+    if search: users = users.filter(Q(username__icontains=search))
+    serializer = CustomUserGetSerializer(users, many=True)
+    return Response(serializer.data, 200)
 
 
 @get_user_schema

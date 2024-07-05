@@ -29,7 +29,7 @@ class Sale(models.Model):
     discount = models.FloatField(default=0)
     info = models.TextField(blank=True, null=True, verbose_name='Информация')
     date = models.DateField(auto_now_add=True, verbose_name='Дата')
-    sold_user = models.ForeignKey(CustomUser, on_delete=models.PROTECT, blank=True, null=True)
+    sold_user = models.ForeignKey(CustomUser, on_delete=models.PROTECT)
 
     class Meta:
         verbose_name_plural = "Продажи"

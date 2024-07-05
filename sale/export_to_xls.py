@@ -12,7 +12,7 @@ from utils.permissions import allowed_only_admin
 @api_view(['GET'])
 @allowed_only_admin()
 def export_sales_to_excel(request):
-    user = request.query_params.get('user')
+    user = request.query_params.get('pk')
     from_date = request.query_params.get('from_date')
     to_date = request.query_params.get('to_date')
 
@@ -24,7 +24,6 @@ def export_sales_to_excel(request):
 
     if from_date > to_date:
         return HttpResponse({'detail': 'from_date must be less than to_date!'}, status=422)
-
     if user:
         sales = Sale.objects.filter(
             sold_user=user,

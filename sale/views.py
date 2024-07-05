@@ -10,7 +10,7 @@ from sale.schemas import update_sale_schema, get_sales_schema, get_sale_schema, 
     create_sale_schema, delete_sale_schema
 from sale.serializers import SaleGetSerializer, SaleUpdateSerializer, CreditBaseCreateSerializer, SaleCreateSerializer, \
     CreditBaseUpdateSerializer, CreditBaseGetSerializer, SalesGetSerializer
-from utils.pagination import paginate
+from utils.pagination import paginate, CustomOffSetPagination
 from utils.permissions import check_allowed
 from utils.responses import success
 
@@ -104,7 +104,10 @@ def get_sales(request):
         sales = sales.filter(date__range=(start_of_month, today))
         if user:
             sales = sales.filter(sold_user=user)
-    return paginate(sales, SalesGetSerializer, request)
+    paginator = CustomOffSetPagination()
+    paginated_order = paginator.paginate_queryset(sales, request)
+    serializer = SalesGetSerializer(paginated_order, many=True, context={'request': request})
+    return paginator.get_paginated_response(serializer.data)
 
 
 @get_sale_schema
@@ -113,7 +116,7 @@ def get_sales(request):
 def get_sale(request):
     pk = request.query_params.get('pk')
     sale = Sale.objects.select_related('client').prefetch_related('product', 'credit_base').get(id=pk)
-    serializer = SaleGetSerializer(sale)
+    serializer = SaleGetSerializer(sale, context={'request': request})
     return Response(serializer.data, status=200)
 
 

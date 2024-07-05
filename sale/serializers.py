@@ -1,3 +1,4 @@
+from rest_framework.fields import SerializerMethodField
 from rest_framework.serializers import ModelSerializer
 from client.serializers import ClientSerializerForRelation
 from product.serializers import ProductSerializerForRelation
@@ -48,17 +49,35 @@ class SalesGetSerializer(ModelSerializer):
     client = ClientSerializerForRelation()
     credit_base = CreditBaseSerializerForRelation(many=True)
     sold_user = CustomUserSerializerForRelation()
+    bought_price = SerializerMethodField()
 
     class Meta:
         model = Sale
-        fields = ('id', 'product', 'client', 'sold_price', 'credit_base', 'discount', 'info', 'date', 'sold_user')
+        fields = ('id', 'product', 'client', 'bought_price', 'sold_price',
+                  'credit_base', 'discount', 'info', 'date', 'sold_user')
+
+    def get_bought_price(self, obj):
+        if self.context['request'].user.role == 'admin':
+            total_bought_price = sum(product.purchase_price for product in obj.product.all())
+            return total_bought_price
+        else:
+            return 0
 
 
 class SaleGetSerializer(ModelSerializer):
     product = ProductSerializerForRelation(many=True)
     client = ClientSerializerForRelation()
     credit_base = CreditBaseSerializerForRelation(many=True)
+    bought_price = SerializerMethodField()
 
     class Meta:
         model = Sale
-        fields = ('id', 'product', 'client', 'sold_price', 'credit_base', 'discount', 'info', 'date', 'sold_user')
+        fields = ('id', 'product', 'client', 'bought_price','sold_price',
+                  'credit_base', 'discount', 'info', 'date', 'sold_user')
+
+    def get_bought_price(self, obj):
+        if self.context['request'].user.role == 'admin':
+            total_bought_price = sum(product.purchase_price for product in obj.product.all())
+            return total_bought_price
+        else:
+            return 0

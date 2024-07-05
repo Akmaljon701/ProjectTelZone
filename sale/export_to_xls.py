@@ -35,14 +35,17 @@ def export_sales_to_excel(request):
         ).select_related('client', 'sold_user').prefetch_related('product', 'credit_base')
 
     sales_data = []
-    total_sold_price = 0  # Initialize total sold price
+    total_purchase_price = 0
+    total_sold_price = 0
 
     for sale in sales:
         products = ', '.join([str(product) for product in sale.product.all()])
         credit_bases = ', '.join([str(credit_base) for credit_base in sale.credit_base.all()])
+        purchase_price = sum([product.purchase_price for product in sale.product.all()])
         sales_data.append([
             sale.client.FIO,
             sale.client.phone_number,
+            purchase_price,
             sale.sold_price,
             products,
             credit_bases,
@@ -51,20 +54,24 @@ def export_sales_to_excel(request):
             sale.date.strftime('%Y-%m-%d'),
             sale.sold_user.username
         ])
+        total_purchase_price += purchase_price
+        total_sold_price += sale.sold_price
 
-        total_sold_price += sale.sold_price  # Accumulate total sold price
-
-    # Calculate total discount
     total_discount = sum([sale.discount for sale in sales])
+    profit = total_sold_price - total_purchase_price
 
-    # Append total row to sales_data
     sales_data.append([
-        'Umumiy', '', total_sold_price, '', '',
+        'Umumiy', '', total_purchase_price, total_sold_price, '', '',
         total_discount, '', '', ''
     ])
 
+    sales_data.append([
+        'Foyda', '', profit, '', '', '',
+        '', '', '', ''
+    ])
+
     df = pd.DataFrame(sales_data, columns=[
-        'Mijoz', 'Mijoz raqami', 'Sotilgan narx', 'Mahsulotlar',
+        'Mijoz', 'Mijoz raqami', 'Sotib olingan narx', 'Sotilgan narx', 'Mahsulotlar',
         'Kredit bazalar', 'Chegirma', 'Qo\'shimcha', 'Sana', 'Sotuvchi'
     ])
 

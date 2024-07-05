@@ -44,7 +44,9 @@ class ProductGetSerializer(ModelSerializer):
     def get_percent(self, obj) -> float:
         user = self.context['request'].user
         if user.role == 'worker':
-            return 0
+            permission = CustomUserPermission.objects.get(user=user)
+            if not permission.product_can_update:
+                return 0
         return obj.percent
 
 

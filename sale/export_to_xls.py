@@ -42,11 +42,13 @@ def export_sales_to_excel(request):
         products = ', '.join([str(product) for product in sale.product.all()])
         credit_bases = ', '.join([str(credit_base) for credit_base in sale.credit_base.all()])
         purchase_price = sum([product.purchase_price for product in sale.product.all()])
+        profit = sale.sold_price - purchase_price
         sales_data.append([
             sale.client.FIO,
             sale.client.phone_number,
             purchase_price,
             sale.sold_price,
+            profit,
             products,
             credit_bases,
             sale.discount,
@@ -58,20 +60,15 @@ def export_sales_to_excel(request):
         total_sold_price += sale.sold_price
 
     total_discount = sum([sale.discount for sale in sales])
-    profit = total_sold_price - total_purchase_price
+    total_profit = total_sold_price - total_purchase_price
 
     sales_data.append([
-        'Umumiy', '', total_purchase_price, total_sold_price, '', '',
+        'Umumiy', '', total_purchase_price, total_sold_price, total_profit, '', '',
         total_discount, '', '', ''
     ])
 
-    sales_data.append([
-        'Foyda', '', profit, '', '', '',
-        '', '', '', ''
-    ])
-
     df = pd.DataFrame(sales_data, columns=[
-        'Mijoz', 'Mijoz raqami', 'Sotib olingan narx', 'Sotilgan narx', 'Mahsulotlar',
+        'Mijoz', 'Mijoz raqami', 'Sotib olingan narx', 'Sotilgan narx', 'Foyda', 'Mahsulotlar',
         'Kredit bazalar', 'Chegirma', 'Qo\'shimcha', 'Sana', 'Sotuvchi'
     ])
 

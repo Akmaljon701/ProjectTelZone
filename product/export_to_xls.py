@@ -25,7 +25,7 @@ def export_products_to_excel(request):
             product.price,
             product.imei,
             product.date.strftime('%Y-%m-%d'),
-            product.status,
+            'sotuvda',
             profit
         ])
         total_profit += profit

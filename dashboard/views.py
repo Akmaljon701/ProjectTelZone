@@ -49,10 +49,10 @@ def get_payment_results(request):
 
     remaining_products = Product.objects.filter(status='on_sale').all()
     total_purchase_price = remaining_products.aggregate(
-        total_price=Sum(F('count') * F('purchase_price'))
+        total_price=Sum('purchase_price')
     )['total_price']
     total_price = remaining_products.aggregate(
-        total_price=Sum(F('count') * F('price'))
+        total_price=Sum('price')
     )['total_price']
 
     return Response({'text': text,

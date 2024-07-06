@@ -12,20 +12,12 @@ from utils.permissions import allowed_only_admin
 @api_view(['GET'])
 @allowed_only_admin()
 def export_products_to_excel(request):
-    products = Product.objects.filter(status='on_sale').annotate(
-        total_purchase_price=Sum(F('purchase_price')),
-        total_percent=Sum(F('percent')),
-        total_price=Sum(F('price')),
-    ).all()
-
-    total_sum = products.aggregate(
-        total_purchase_price_sum=Sum(F('total_purchase_price')),
-        total_percent_sum=Sum(F('total_percent')),
-        total_price_sum=Sum(F('total_price')),
-    )
+    products = Product.objects.filter(status='on_sale').all()
 
     products_data = []
+    total_profit = 0
     for product in products:
+        profit = product.price - product.purchase_price
         products_data.append([
             product.name,
             product.purchase_price,
@@ -34,23 +26,18 @@ def export_products_to_excel(request):
             product.imei,
             product.date.strftime('%Y-%m-%d'),
             product.status,
-            product.total_purchase_price,
-            product.total_percent,
-            product.total_price
+            profit
         ])
+        total_profit += profit
 
     products_data.append([
         'Umumiy', '', '', '',
-        '', '', '',
-        total_sum['total_purchase_price_sum'] if total_sum['total_purchase_price_sum'] else 0,
-        total_sum['total_percent_sum'] if total_sum['total_percent_sum'] else 0,
-        total_sum['total_price_sum'] if total_sum['total_price_sum'] else 0
+        '', '', '', total_profit
     ])
 
     df = pd.DataFrame(products_data, columns=[
         'Nomi', 'Olingan narx', 'Foiz',
-        'Sotuv narx', 'IMEI', 'Sana', 'Status',
-        'Umumiy olingan narx', 'Umumiy foiz', 'Umumiy sotuv narx'
+        'Sotuv narx', 'IMEI', 'Sana', 'Status', 'Kutilyotgan foyda'
     ])
 
     response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')

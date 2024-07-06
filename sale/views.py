@@ -91,8 +91,7 @@ def get_sales(request):
             sales = sales.filter(sold_user=user)
     else:
         today = datetime.now().date()
-        start_of_month = today.replace(day=1)
-        sales = sales.filter(date__range=(start_of_month, today))
+        sales = sales.filter(date=today)
         if user:
             sales = sales.filter(sold_user=user)
     paginator = CustomOffSetPagination()

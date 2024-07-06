@@ -11,7 +11,6 @@ class ProductAdminForm(ModelForm):
     purchase_price = FloatField(label='Цена покупки')
     percent = FloatField(label='Процент', required=False)
     price = FloatField(label='Цена', required=False)
-    count = FloatField(label='Шт')
 
     def clean(self):
         cleaned_data = super().clean()

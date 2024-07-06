@@ -1,5 +1,4 @@
 from datetime import datetime
-
 from django.db import transaction
 from django.db.models import Q
 from rest_framework.decorators import api_view
@@ -24,9 +23,7 @@ def create_sale(request):
     serializer.is_valid(raise_exception=True)
     sale = serializer.save(sold_user=request.user)
     for product in sale.product.all():
-        product.count -= 1
-        if product.count == 0:
-            product.status = 'sold'
+        product.status = 'sold'
         product.save()
     return success
 
@@ -45,14 +42,10 @@ def update_sale(request):
     updated_products = set(updated_sale.product.all())
     if original_products != updated_products:
         for product in original_products - updated_products:
-            product.count += 1
-            if product.count > 0:
-                product.status = 'on_sale'
+            product.status = 'on_sale'
             product.save()
         for product in updated_products - original_products:
-            product.count -= 1
-            if product.count == 0:
-                product.status = 'sold'
+            product.status = 'sold'
             product.save()
     return success
 
@@ -66,9 +59,7 @@ def delete_sale(request):
     sale = Sale.objects.get(id=pk)
     products = sale.product.all()
     for product in products:
-        product.count += 1
-        if product.count > 0:
-            product.status = 'on_sale'
+        product.status = 'on_sale'
         product.save()
     sale.delete()
     return success

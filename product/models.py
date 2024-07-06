@@ -3,7 +3,6 @@ from django.db import models
 
 class Product(models.Model):
     name = models.CharField(max_length=100, verbose_name='Название')
-    count = models.PositiveIntegerField(verbose_name='Шт')
     purchase_price = models.FloatField(verbose_name='Цена покупки')
     percent = models.FloatField(blank=True, null=True, verbose_name='Процент')
     price = models.FloatField(blank=True, null=True, verbose_name='Цена')

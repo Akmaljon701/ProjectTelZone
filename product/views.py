@@ -45,6 +45,8 @@ def create_product(request):
 def update_product(request):
     pk = request.query_params.get('pk')
     product = Product.objects.get(id=pk)
+    if product.status == 'sold':
+        return Response({'detail': 'The sold product cannot be changed!'}, 400)
     serializer = ProductUpdateSerializer(product, data=request.data, partial=True)
     serializer.is_valid(raise_exception=True)
     purchase_price = serializer.validated_data['purchase_price']

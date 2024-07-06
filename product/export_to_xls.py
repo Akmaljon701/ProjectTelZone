@@ -13,9 +13,9 @@ from utils.permissions import allowed_only_admin
 @allowed_only_admin()
 def export_products_to_excel(request):
     products = Product.objects.filter(status='on_sale').annotate(
-        total_purchase_price=Sum(F('count') * F('purchase_price')),
-        total_percent=Sum(F('count') * F('percent')),
-        total_price=Sum(F('count') * F('price')),
+        total_purchase_price=Sum(F('purchase_price')),
+        total_percent=Sum(F('percent')),
+        total_price=Sum(F('price')),
     ).all()
 
     total_sum = products.aggregate(
@@ -28,7 +28,6 @@ def export_products_to_excel(request):
     for product in products:
         products_data.append([
             product.name,
-            product.count,
             product.purchase_price,
             product.percent,
             product.price,
@@ -41,7 +40,7 @@ def export_products_to_excel(request):
         ])
 
     products_data.append([
-        'Umumiy', '', '', '', '',
+        'Umumiy', '', '', '',
         '', '', '',
         total_sum['total_purchase_price_sum'] if total_sum['total_purchase_price_sum'] else 0,
         total_sum['total_percent_sum'] if total_sum['total_percent_sum'] else 0,
@@ -49,7 +48,7 @@ def export_products_to_excel(request):
     ])
 
     df = pd.DataFrame(products_data, columns=[
-        'Nomi', 'Soni', 'Olingan narx', 'Foiz',
+        'Nomi', 'Olingan narx', 'Foiz',
         'Sotuv narx', 'IMEI', 'Sana', 'Status',
         'Umumiy olingan narx', 'Umumiy foiz', 'Umumiy sotuv narx'
     ])
@@ -74,3 +73,4 @@ def export_products_to_excel(request):
             worksheet.column_dimensions[get_column_letter(column[0].column)].width = adjusted_width
 
     return response
+

@@ -61,7 +61,7 @@ def get_clients(request):
 @api_view(['GET'])
 @check_allowed('client_can_view')
 def get_clients_for_select(request):
-    clients = Client.objects.all().order_by('-d')
+    clients = Client.objects.all().order_by('-id')
     search = request.query_params.get('search')
     if search: clients = clients.filter(Q(FIO__icontains=search) | Q(phone_number__icontains=search))
     serializer = ClientGetSerializer(clients, many=True)

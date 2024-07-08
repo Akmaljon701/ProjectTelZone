@@ -103,8 +103,10 @@ def get_products(request):
 @check_allowed('product_can_view')
 def get_on_sale_products_for_select(request):
     search = request.query_params.get('search')
-    products = Product.objects.filter(status='on_sale').all().order_by('-id')
-    if search: products = products.filter(Q(name__icontains=search) | Q(imei__icontains=search))
+    if search:
+        products = Product.objects.filter(Q(name__icontains=search) | Q(imei__icontains=search))
+    else:
+        products = Product.objects.filter(status='on_sale').all().order_by('-id')[:50]
     serializer = ProductGetSerializer(products, many=True)
     return Response(serializer.data, 200)
 

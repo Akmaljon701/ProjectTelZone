@@ -35,6 +35,15 @@ get_clients_schema = extend_schema(
     ]
 )
 
+get_clients_for_select_schema = extend_schema(
+    summary="Get clients for select",
+    request=None,
+    responses=ClientGetSerializer,
+    parameters=[
+        OpenApiParameter(name='search', description='FIO or phone', required=False, type=OpenApiTypes.STR),
+    ]
+)
+
 get_client_schema = extend_schema(
     summary="Get client",
     responses=ClientGetSerializer,

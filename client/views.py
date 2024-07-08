@@ -57,6 +57,17 @@ def get_clients(request):
     return paginate(clients, ClientGetSerializer, request)
 
 
+@get_clients_for_select_schema
+@api_view(['GET'])
+@check_allowed('client_can_view')
+def get_clients_for_select(request):
+    clients = Client.objects.all().order_by('-d')
+    search = request.query_params.get('search')
+    if search: clients = clients.filter(Q(FIO__icontains=search) | Q(phone_number__icontains=search))
+    serializer = ClientGetSerializer(clients, many=True)
+    return Response(serializer.data, 200)
+
+
 @get_client_schema
 @api_view(['GET'])
 @check_allowed('client_can_view')

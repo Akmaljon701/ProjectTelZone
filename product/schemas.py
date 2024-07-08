@@ -38,6 +38,15 @@ get_products_schema = extend_schema(
     ]
 )
 
+get_on_sale_products_for_select_schema = extend_schema(
+    request=None,
+    responses=ProductGetSerializer,
+    summary="Get on sale products for select",
+    parameters=[
+        OpenApiParameter(name='search', description='name or imei', required=False, type=OpenApiTypes.STR),
+    ]
+)
+
 get_product_schema = extend_schema(
     summary="Get product",
     responses=ProductGetSerializer,

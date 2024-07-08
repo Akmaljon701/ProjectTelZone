@@ -1,8 +1,11 @@
+from django.db import transaction
 from django.db.models import Q
 from rest_framework.decorators import api_view
 from client.schemas import *
 from client.serializers import ClientCreateSerializer, ClientUpdateSerializer, ClientGetSerializer
 from rest_framework.response import Response
+
+from sale.models import Sale
 from utils.pagination import paginate
 from utils.permissions import check_allowed
 from utils.responses import success
@@ -27,6 +30,20 @@ def update_client(request):
     serializer = ClientUpdateSerializer(client, data=request.data, partial=True)
     serializer.is_valid(raise_exception=True)
     serializer.save()
+    return success
+
+
+@delete_client_schema
+@api_view(['DELETE'])
+@check_allowed('client_can_delete')
+@transaction.atomic
+def delete_client(request):
+    pk = request.query_params.get('pk')
+    client = Client.objects.get(id=pk)
+    sale = Sale.objects.filter(client=client)
+    if sale:
+        return Response('A transaction was made with this client. Failed to delete!', 400)
+    client.delete()
     return success
 
 

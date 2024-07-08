@@ -18,10 +18,12 @@ class CustomUserPermission(models.Model):
 
     product_can_create = models.BooleanField(default=False)
     product_can_update = models.BooleanField(default=False)
+    product_can_delete = models.BooleanField(default=False)
     product_can_view = models.BooleanField(default=True)
 
     client_can_create = models.BooleanField(default=False)
     client_can_update = models.BooleanField(default=False)
+    client_can_delete = models.BooleanField(default=False)
     client_can_view = models.BooleanField(default=True)
 
     sale_can_create = models.BooleanField(default=False)

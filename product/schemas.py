@@ -18,6 +18,15 @@ update_product_schema = extend_schema(
     ]
 )
 
+delete_product_schema = extend_schema(
+    summary="Delete product",
+    request=None,
+    responses=response_schema,
+    parameters=[
+        OpenApiParameter(name='pk', description='Product ID', required=True, type=OpenApiTypes.INT),
+    ]
+)
+
 get_products_schema = extend_schema(
     request=None,
     responses=ProductGetSerializer,

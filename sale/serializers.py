@@ -1,4 +1,5 @@
-from rest_framework.fields import SerializerMethodField
+from drf_spectacular.utils import extend_schema_field
+from rest_framework.fields import SerializerMethodField, FloatField
 from rest_framework.serializers import ModelSerializer
 from client.serializers import ClientSerializerForRelation
 from product.serializers import ProductSerializerForRelation
@@ -56,7 +57,8 @@ class SalesGetSerializer(ModelSerializer):
         fields = ('id', 'product', 'client', 'bought_price', 'sold_price',
                   'credit_base', 'discount', 'info', 'date', 'sold_user')
 
-    def get_bought_price(self, obj):
+    @extend_schema_field(FloatField)
+    def get_bought_price(self, obj) -> float:
         if self.context['request'].user.role == 'admin':
             total_bought_price = sum(product.purchase_price for product in obj.product.all())
             return total_bought_price
@@ -75,7 +77,8 @@ class SaleGetSerializer(ModelSerializer):
         fields = ('id', 'product', 'client', 'bought_price','sold_price',
                   'credit_base', 'discount', 'info', 'date', 'sold_user')
 
-    def get_bought_price(self, obj):
+    @extend_schema_field(FloatField)
+    def get_bought_price(self, obj) -> float:
         if self.context['request'].user.role == 'admin':
             total_bought_price = sum(product.purchase_price for product in obj.product.all())
             return total_bought_price

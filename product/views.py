@@ -1,3 +1,4 @@
+from django.db import transaction
 from django.db.models import Q
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -67,6 +68,19 @@ def update_product(request):
         return success
     else:
         return Response({'detail': 'Unexpected error! (Note: price or percent must be 0)'}, status=400)
+
+
+@delete_product_schema
+@api_view(['DELETE'])
+@check_allowed('product_can_delete')
+@transaction.atomic
+def delete_product(request):
+    pk = request.query_params.get('pk')
+    product = Product.objects.get(id=pk)
+    if product.status == 'sold':
+        return Response({'detail': 'The sold product cannot be deleted!'}, 400)
+    product.delete()
+    return success
 
 
 @get_products_schema

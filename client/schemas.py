@@ -17,6 +17,15 @@ update_client_schema = extend_schema(
     ]
 )
 
+delete_client_schema = extend_schema(
+    summary="Delete client",
+    request=None,
+    responses=response_schema,
+    parameters=[
+        OpenApiParameter(name='pk', description='Client ID', required=True, type=OpenApiTypes.INT),
+    ]
+)
+
 get_clients_schema = extend_schema(
     summary="Get clients",
     request=None,

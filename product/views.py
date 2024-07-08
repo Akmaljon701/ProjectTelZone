@@ -107,7 +107,7 @@ def get_on_sale_products_for_select(request):
         products = Product.objects.filter(Q(name__icontains=search) | Q(imei__icontains=search))
     else:
         products = Product.objects.filter(status='on_sale').all().order_by('-id')[:50]
-    serializer = ProductGetSerializer(products, many=True)
+    serializer = ProductGetSerializer(products, many=True, context={'request': request})
     return Response(serializer.data, 200)
 
 
